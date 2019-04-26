@@ -1,6 +1,7 @@
 const { logger, errorLogger } = require('../middleware/winston');
-const jwtCheck = require('../middleware/authorise');
+const jwtCheck = require('../middleware/jwtCheck');
 const tiers = require('../routes/tiers');
+const users = require('../routes/users');
 
 module.exports = server => {
   server.use(logger);
@@ -9,7 +10,7 @@ module.exports = server => {
       res.send('Secured Resource');
   });
   // server.use('/api/auth', auth);
-  // server.use('/api/users', users);
+  server.use('/api/users', users);
   // server.use('/api/games', games);
   // server.use('/api/rounds', rounds);
   // server.use('/api/questions', questions);
