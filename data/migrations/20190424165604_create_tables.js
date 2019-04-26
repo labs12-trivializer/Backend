@@ -86,6 +86,32 @@ exports.up = function(knex) {
         tbl.string('name', 128);
         tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
+
+      //Questions table
+      .createTable('questions', tbl => {
+        tbl.increments();
+        tbl
+          .integer('user_id')
+          .unsigned()
+          .references('id')
+          .inTable('users')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl
+          .integer('question_type_id')
+          .unsigned()
+          .references('id')
+          .inTable('question_types')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl
+          .integer('category_id')
+          .unsigned()
+          .references('id')
+          .inTable('categories')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+      })
   );
 };
 
