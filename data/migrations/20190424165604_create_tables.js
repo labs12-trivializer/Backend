@@ -60,7 +60,7 @@ exports.up = function(knex) {
           .onUpdate('CASCADE');
         tbl.string('logo_url', 400);
       })
-
+      //Rounds table
       .createTable('rounds', tbl => {
         tbl.increments();
         tbl
@@ -72,6 +72,19 @@ exports.up = function(knex) {
           .onUpdate('CASCADE');
         tbl.timestamp('timestamps').defaultTo(knex.fn.now());
         tbl.integer('number').notNullable();
+      })
+      //Question types table
+      .createTable('question_types', tbl => {
+        tbl.increments();
+        tbl
+          .integer('user_id')
+          .unsigned()
+          .references('id')
+          .inTable('users')
+          .onDelete('CASCASDE')
+          .onUpdate('CASCADE');
+        tbl.string('name', 128);
+        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
   );
 };
