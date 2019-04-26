@@ -81,7 +81,7 @@ exports.up = function(knex) {
           .unsigned()
           .references('id')
           .inTable('users')
-          .onDelete('CASCASDE')
+          .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('name', 128);
         tbl.timestamp('timestamps').defaultTo(knex.fn.now());
@@ -139,7 +139,7 @@ exports.up = function(knex) {
           .inTable('questions')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
-        tbl.boolean().notNullable();
+        tbl.boolean('is_correct').notNullable();
         tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
   );
