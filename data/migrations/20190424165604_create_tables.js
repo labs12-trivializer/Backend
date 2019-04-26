@@ -146,5 +146,13 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists('tiers');
+  return knex.schema
+    .dropTableIfExists('answers')
+    .dropTableIfExists('questions')
+    .dropTableIfExists('question_types')
+    .dropTableIfExists('rounds')
+    .dropTableIfExists('games')
+    .dropTableIfExists('categories')
+    .dropTableIfExists('users')
+    .dropTableIfExists('tiers');
 };
