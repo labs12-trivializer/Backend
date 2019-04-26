@@ -32,6 +32,17 @@ exports.up = function(knex) {
         tbl.string('logo_url', 400);
         tbl.string('stripe_customer_id', 400);
       })
+      .createTable('category', tbl => {
+        tbl.increments();
+        tbl
+          .integer('user_id')
+          .unsigned.references('id')
+          .inTable('users')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl.string('name', 128);
+        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+      })
   );
 };
 
