@@ -32,17 +32,20 @@ exports.up = function(knex) {
         tbl.string('logo_url', 400);
         tbl.string('stripe_customer_id', 400);
       })
+      //Categories Table
       .createTable('categories', tbl => {
         tbl.increments();
         tbl
           .integer('user_id')
-          .unsigned.references('id')
+          .unsigned()
+          .references('id')
           .inTable('users')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('name', 128);
         tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
+      //Games Table
       .createTable('games', tbl => {
         tbl.increments();
         tbl.string('name', 128).notNullable();
@@ -56,6 +59,19 @@ exports.up = function(knex) {
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('logo_url', 400);
+      })
+
+      .createTable('rounds', tbl => {
+        tbl.increments();
+        tbl
+          .integer('game_id')
+          .unsigned()
+          .references('id')
+          .inTable('games')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+        tbl.integer('number').notNullable();
       })
   );
 };
