@@ -111,6 +111,36 @@ exports.up = function(knex) {
           .inTable('categories')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
+        tbl.string('body', 128).notNullable();
+        tbl.string('difficulty', 128);
+        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+        tbl
+          .integer('round_id')
+          .unsigned()
+          .references('id')
+          .inTable('round')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+      })
+      //Answers table
+      .createTable('answers', tbl => {
+        tbl.increments();
+        tbl
+          .integer('user_id')
+          .unsigned()
+          .references('id')
+          .inTable('users')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl
+          .integer('question_id')
+          .unsigned()
+          .references('id')
+          .inTable('questions')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl.boolean().notNullable();
+        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
   );
 };
