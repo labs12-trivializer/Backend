@@ -1,9 +1,13 @@
 const { logger, errorLogger } = require('../middleware/winston');
+const jwtCheck = require('../middleware/authorise');
 const tiers = require('../routes/tiers');
 
 module.exports = server => {
   server.use(logger);
 
+  server.get('/authorized', jwtCheck, function (req, res) {
+      res.send('Secured Resource');
+  });
   // server.use('/api/auth', auth);
   // server.use('/api/users', users);
   // server.use('/api/games', games);
