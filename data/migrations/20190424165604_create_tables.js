@@ -118,7 +118,7 @@ exports.up = function(knex) {
           .integer('round_id')
           .unsigned()
           .references('id')
-          .inTable('round')
+          .inTable('rounds')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
       })
