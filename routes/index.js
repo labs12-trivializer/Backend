@@ -13,6 +13,7 @@ module.exports = server => {
   // server.use('/api/rounds', rounds);
   // server.use('/api/questions', questions);
   // server.use('/api/answers', answers);
+  server.use('/api/tiers', tiers);
   server.get(/\/(?:api)?/, (req, res) => {
     res.status(200).json({ message: 'Server up & running!' });
   });
