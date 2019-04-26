@@ -9,11 +9,24 @@ router.use(jwtCheck);
 // user profile route
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
+  const currentUserId = req.user.sub;
+
   const user = await Users.getById(id);
-  if (user.length > 0) {
-    res.status(200).json(user);
+
+  if (user) {
+    // make sure the currentUserId matches auth0_id for the user we're requesting
+    if (user.auth0_id !== currentUserId) {
+      return res.status(422).json({
+        error: {
+          name: 'ValidationError',
+          details: [{ message: "auth0_id does not match token's auth0 id" }]
+        }
+      });
+    }
+
+    return res.status(200).json(user);
   } else {
-    res.status(400).json({ message: 'User does not exist' });
+    return res.status(404).json({ message: 'User does not exist' });
   }
 });
 
