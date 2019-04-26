@@ -1,5 +1,6 @@
 const { logger, errorLogger } = require('../middleware/winston');
 const jwtCheck = require('../middleware/authorise');
+const tiers = require('../routes/tiers');
 
 module.exports = server => {
   server.use(logger);
