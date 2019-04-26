@@ -15,6 +15,23 @@ exports.up = function(knex) {
         tbl.string('stripe_product_id').notNullable();
         tbl.string('stripe_plan_id').notNullable();
       })
+      //Users table
+      .createTable('users', tbl => {
+        tbl.increments();
+        tbl
+          .integer('tier_id')
+          .unsigned()
+          .references('id')
+          .inTable('tiers')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
+        tbl
+          .string('email', 128)
+          .notNullable()
+          .unique();
+        tbl.string('logo_url', 400);
+        tbl.string('stripe_customer_id', 400);
+      })
   );
 };
 
