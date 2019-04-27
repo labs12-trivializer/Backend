@@ -30,7 +30,9 @@ exports.up = function(knex) {
           .notNullable()
           .unique();
         tbl.string('logo_url', 400);
+        tbl.string('avatar_url', 400);
         tbl.string('stripe_customer_id', 400);
+        tbl.string('auth0_id', 255);
       })
       //Categories Table
       .createTable('categories', tbl => {
