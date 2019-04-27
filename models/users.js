@@ -6,7 +6,8 @@ module.exports = {
   getById,
   insert,
   validate,
-  find
+  find,
+  getByAuth0Id
 };
 
 function find() {
@@ -21,6 +22,13 @@ async function get() {
 async function getById(id) {
   const user = await db('users')
     .where({ id })
+    .first();
+  return user;
+}
+
+async function getByAuth0Id(auth0_id) {
+  const user = await db('users')
+    .where({ auth0_id })
     .first();
   return user;
 }
