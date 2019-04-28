@@ -21,6 +21,7 @@
 {
   "id": 506,
   "tier_id": 3,
+  "tier_name": "gold",
   "email": "valid@email.com",
   "logo_url": "http://nope.com/nope.jpg",
   "avatar_url": "http://nope.com/nope.jpg",
@@ -36,6 +37,7 @@
 {
   "id": 506,
   "tier_id": 3,
+  "tier_name": "gold",
   "email": "valid@email.com",
   "logo_url": "http://nope.com/nope.jpg",
   "avatar_url": "http://nope.com/nope.jpg",
@@ -58,6 +60,7 @@
 {
   "id": 506,
   "tier_id": 3,
+  "tier_name": "gold",
   "email": "valid@email.com",
   "logo_url": "http://nope.com/nope.jpg",
   "avatar_url": "http://nope.com/nope.jpg",

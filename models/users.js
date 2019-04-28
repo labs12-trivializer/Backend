@@ -12,23 +12,33 @@ module.exports = {
 };
 
 function find() {
-  return db('users');
+  return db('users')
+    .leftJoin('tiers', 'tiers.id', '=', 'users.tier_id')
+    .select(
+      'tiers.name as tier_name',
+      'users.email',
+      'users.logo_url',
+      'users.avatar_url',
+      'users.id',
+      'users.tier_id',
+      'users.auth0_id'
+    );
 }
 
 async function get() {
-  const users = await db('users');
+  const users = await find();
   return users;
 }
 
 async function getById(id) {
-  const user = await db('users')
+  const user = await find()
     .where({ id })
     .first();
   return user;
 }
 
 async function getByAuth0Id(auth0_id) {
-  const user = await db('users')
+  const user = await find()
     .where({ auth0_id })
     .first();
   return user;
