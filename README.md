@@ -53,7 +53,7 @@
 {
   "email": "valid@email.com",
   "logo_url": "http://nope.com/nope.jpg",
-  "avatar_url": "http://nope.com/nope15.jpg"
+  "avatar_url": "http://nope.com/nope.jpg"
 }
 
 // example response
@@ -68,6 +68,28 @@
 }
 ```
 
+# Resource: QuestionTypes
+
+```javascript
+// GET /question_types
+// get all possible question_types
+
+// example response body
+[
+  {
+    "id": 1,
+    "name": "true/false"
+  },
+  {
+    "id": 2,
+    "name": "multiple choice"
+  },
+  {
+    "id": 3,
+    "name": "fill-in the blank"
+  }
+]
+```
 # Resource: Games
 
 # Resource: Rounds
