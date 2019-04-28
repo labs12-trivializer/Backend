@@ -42,6 +42,7 @@ exports.up = function(knex) {
           .unsigned()
           .references('id')
           .inTable('users')
+          .nullable()
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('name', 128);
