@@ -9,7 +9,6 @@ router.use(jwtCheck);
 // user profile route
 router.get('/my_profile', async (req, res) => {
   const currentUserId = req.user.sub;
-  console.log(currentUserId);
 
   const user = await Users.getByAuth0Id(currentUserId);
 
@@ -20,7 +19,30 @@ router.get('/my_profile', async (req, res) => {
   }
 });
 
-// user profile route
+// update user profile
+router.put('/my_profile', async(req, res) => {
+  const currentUserId = req.user.sub;
+
+  const { body: user } = req;
+
+  user.auth0_id = currentUserId;
+
+
+  const validationResult = Users.validate(req.body);
+  if (validationResult.error) {
+    return res.status(422).json(validationResult);
+  }
+
+  const dbUser = await Users.getByAuth0Id(currentUserId);
+
+  if (dbUser) {
+    return res.status(200).json(user);
+  } else {
+    return res.status(404).json({ message: 'User does not exist' });
+  }
+});
+
+// get user profile by id
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const currentUserId = req.user.sub;

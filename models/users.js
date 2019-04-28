@@ -7,7 +7,8 @@ module.exports = {
   insert,
   validate,
   find,
-  getByAuth0Id
+  getByAuth0Id,
+  update
 };
 
 function find() {
@@ -37,6 +38,13 @@ async function insert(user) {
   return await db('users')
     .insert(user, 'id')
     .then(ids => getById(ids[0]));
+}
+
+async function update(auth0_id, changes) {
+  return await db('users')
+    .where({ auth0_id })
+    .update(changes)
+    .then(() => getByAuth0Id(auth0_id));
 }
 
 function validate(user) {
