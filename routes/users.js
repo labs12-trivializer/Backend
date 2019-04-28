@@ -33,13 +33,8 @@ router.put('/my_profile', async(req, res) => {
     return res.status(422).json(validationResult);
   }
 
-  const dbUser = await Users.getByAuth0Id(currentUserId);
-
-  if (dbUser) {
-    return res.status(200).json(user);
-  } else {
-    return res.status(404).json({ message: 'User does not exist' });
-  }
+  const updatedUser = await Users.update(currentUserId, user);
+  return res.status(200).json(updatedUser);
 });
 
 // get user profile by id
