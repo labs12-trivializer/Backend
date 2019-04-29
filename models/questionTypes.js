@@ -9,29 +9,29 @@ module.exports = {
 };
 
 function find() {
-  return db('games');
+  return db('question_types');
 }
 
 async function get() {
-  const games = await find();
-  return games;
+  const questionTypes = await find();
+  return questionTypes;
 }
 
 async function getById(id) {
-  const game = await find()
+  const questionType = await find()
     .where({ id })
     .first();
-  return game;
+  return questionType;
 }
 
-async function insert(game) {
-  return await db('games')
-    .insert(game, 'id')
+async function insert(questionType) {
+  return await db('question_types')
+    .insert(questionType, 'id')
     .then(ids => getById(ids[0]));
 }
 
 async function update(id, changes) {
-  return await db('games')
+  return await db('question_types')
     .where({ id })
     .update(changes)
     .then(() => getById(id));
