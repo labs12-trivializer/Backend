@@ -77,22 +77,108 @@
 // example response body
 [
   {
-    "id": 1,
-    "name": "true/false"
+    id: 1,
+    name: 'true/false',
   },
   {
-    "id": 2,
-    "name": "multiple choice"
+    id: 2,
+    name: 'multiple choice',
   },
   {
-    "id": 3,
-    "name": "fill-in the blank"
-  }
-]
+    id: 3,
+    name: 'fill-in the blank',
+  },
+];
 ```
+
 # Resource: Games
 
 # Resource: Rounds
+
+```javascript
+// GET /rounds
+// example response body
+[
+  {
+    id: 1,
+    game_id: 1,
+    timestamps: '2019-04-29 15:41:47',
+    number: 5,
+  },
+  {
+    id: 2,
+    game_id: 1,
+    timestamps: '2019-04-29 22:14:00',
+    number: 4,
+  },
+  {
+    id: 3,
+    game_id: 1,
+    timestamps: '2019-04-29 22:14:29',
+    number: 4,
+  },
+];
+```
+
+```javascript
+// GET by id /rounds/:id
+
+// example request: GET to '/rounds/1'
+//example response body:
+ {
+    id: 1,
+    game_id: 1,
+    timestamps: '2019-04-29 15:41:47',
+    number: 5,
+  }
+```
+
+```javascript
+// POST /rounds
+// example request body
+{
+	"game_id": 2,
+	"number": 2
+}
+
+// example response body
+{
+  "id": 6,
+  "game_id": 2,
+  "timestamps": "2019-04-29 22:52:01",
+  "number": 2
+}
+```
+
+```javascript
+// PUT /rounds/:id
+// example request body to '/rounds/6' with updates:
+{
+	"game_id": 2,
+	"number": 4
+}
+
+// example response body
+{
+  "id": 6,
+  "game_id": 2,
+  "timestamps": "2019-04-29 22:52:01",
+  "number": 4
+}
+```
+
+```javascript
+// DELETE /rounds/:id
+//Successfull delete returns:
+{
+  "message": "item deleted"
+}
+
+// Unsuccesful delete because item doesnt exist returns:
+{
+  "message": 'round does not exist, cannot delete'
+}
+```
 
 # Resource: Questions
 
