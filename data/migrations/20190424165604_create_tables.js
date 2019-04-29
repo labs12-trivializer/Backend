@@ -42,6 +42,7 @@ exports.up = function(knex) {
           .unsigned()
           .references('id')
           .inTable('users')
+          .nullable()
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('name', 128);
@@ -78,15 +79,7 @@ exports.up = function(knex) {
       //Question types table
       .createTable('question_types', tbl => {
         tbl.increments();
-        tbl
-          .integer('user_id')
-          .unsigned()
-          .references('id')
-          .inTable('users')
-          .onDelete('CASCADE')
-          .onUpdate('CASCADE');
         tbl.string('name', 128);
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
 
       //Questions table

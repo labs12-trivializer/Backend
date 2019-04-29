@@ -7,6 +7,37 @@ const Users = require('../models/users');
 router.use(jwtCheck);
 
 // user profile route
+router.get('/my_profile', async (req, res) => {
+  const currentUserId = req.user.sub;
+
+  const user = await Users.getByAuth0Id(currentUserId);
+
+  if (user) {
+    return res.status(200).json(user);
+  } else {
+    return res.status(404).json({ message: 'User does not exist' });
+  }
+});
+
+// update user profile
+router.put('/my_profile', async(req, res) => {
+  const currentUserId = req.user.sub;
+
+  const { body: user } = req;
+
+  user.auth0_id = currentUserId;
+
+
+  const validationResult = Users.validate(req.body);
+  if (validationResult.error) {
+    return res.status(422).json(validationResult);
+  }
+
+  const updatedUser = await Users.update(currentUserId, user);
+  return res.status(200).json(updatedUser);
+});
+
+// get user profile by id
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const currentUserId = req.user.sub;
