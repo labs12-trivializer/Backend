@@ -1,8 +1,11 @@
 const { logger, errorLogger } = require('../middleware/winston');
 const restricted = require('../middleware/restricted');
 const tiers = require('./tiers');
+// const auth = require('./auth');
 const users = require('./users');
 const questionTypes = require('./questionTypes');
+const questions = require('./questions');
+// const answers = require('./answers');
 const categories = require('./categories');
 const games = require('./games');
 const rounds = require('./rounds');
@@ -19,7 +22,8 @@ module.exports = server => {
   server.use('/api/users', restricted, users);
   server.use('/api/games', restricted, lookupUser, games);
   server.use('/api/rounds', restricted, lookupUser, rounds);
-  // server.use('/api/questions', questions);
+  server.use('/api/questions', questions);
+  // server.use('/api/answers', answers);
   server.use('/api/answers', restricted, answers);
   server.use('/api/question_types', restricted, questionTypes);
   server.use('/api/categories', restricted, categories);
