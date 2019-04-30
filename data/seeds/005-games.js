@@ -1,10 +1,8 @@
 const faker = require('faker');
 
-faker.seed(123);
+const randomItem = require('./helpers/randomItem');
 
-const randomItem = array => {
-  return array[Math.floor(Math.random() * array.length)];
-};
+faker.seed(123);
 
 exports.seed = async function(knex) {
   // get an array of users with valid auth0_ids

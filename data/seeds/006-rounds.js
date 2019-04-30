@@ -1,6 +1,4 @@
-const randomItem = array => {
-  return array[Math.floor(Math.random() * array.length)];
-};
+const randomItem = require('./helpers/randomItem');
 
 exports.seed = async function(knex) {
   const dbGames = await knex('games');
