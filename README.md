@@ -302,6 +302,150 @@ Example:
 
 # Resource: Questions
 
+## [GET] all user's questions
+
+**URL:** `/api/questions`
+
+**Restricted:** User must be logged in.
+
+**Returns:** an array of question objects.
+
+Example:
+
+```js
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "question_type_id": 1,
+    "category_id": 1,
+    "body": "A walrus makes what sound?",
+    "difficulty": "Easy",
+    "timestamps": "2019-04-30 19:47:24",
+    "round_id": 1
+  },
+  {
+    "id": 2,
+    "user_id": 1,
+    "question_type_id": 1,
+    "category_id": 1,
+    "body": "What Philly celebrity would you want to have a drink with?",
+    "difficulty": "Easy",
+    "timestamps": "2019-04-30 19:47:24",
+    "round_id": 1
+  },
+]
+```
+
+## [GET] question by id
+
+**URL:** `/api/questions/:id`
+
+**Restricted:** User must be logged in, User must own question.
+
+**Returns:** an array of question objects.
+
+Example:
+
+```js
+[
+  {
+    "id": 2,
+    "user_id": 1,
+    "question_type_id": 1,
+    "category_id": 1,
+    "body": "What Philly celebrity would you want to have a drink with?",
+    "difficulty": "Easy",
+    "timestamps": "2019-04-30 19:47:24",
+    "round_id": 1
+  }
+]
+```
+
+## [POST] new question
+
+**URL:** `/api/questions`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "user_id": 1, // integer
+  "question_type_id": 1, // integer
+  "category_id": 2, // integer
+  "body": "What color pill does Neo take from Morpheus?", // string, max 128 chars, required
+  "difficulty": "Medium", // string, max 128 chars
+  "timestamps": "2019-04-30 21:35:22", // timestamp, optional
+  "round_id": 2 // integer
+}
+```
+
+**Returns:** a new question object.
+
+Example:
+
+```js
+{
+  "id": 7,
+  "user_id": 1,
+  "question_type_id": 1,
+  "category_id": 2,
+  "body": "What color pill does Neo take from Morpheus?",
+  "difficulty": "Medium",
+  "timestamps": "2019-04-30 21:35:22",
+  "round_id": 2
+}
+```
+
+## [PUT] question
+
+**URL:** `/api/questions/:id`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "id": 7,
+  "user_id": 1,
+  "question_type_id": 1,
+  "category_id": 2,
+  "body": "Who does Neo take a colored pill from?",
+  "difficulty": "Medium",
+  "timestamps": "2019-04-30 21:35:22",
+  "round_id": 2
+}
+```
+
+**Returns:** an updated question object.
+
+## [DELETE] question
+
+**URL:** `/api/questions/:id`
+
+**Restricted:** User must be logged in.
+
+**Returns:** a success message.
+
+```js
+{
+  "deleted": {
+    "id": 10,
+    "user_id": 1,
+    "question_type_id": 1,
+    "category_id": 1,
+    "body": "An example question should ask what?",
+    "difficulty": "Medium",
+    "timestamps": "2019-04-30 21:35:22",
+    "round_id": 2
+  },
+  "message": "Question deleted"
+}
+```
+
 # Resource: Answers
 
 ## [GET] answer by _question_ id
