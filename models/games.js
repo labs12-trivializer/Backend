@@ -1,5 +1,5 @@
 const db = require('../data/db');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 module.exports = {
   get,
@@ -8,7 +8,7 @@ module.exports = {
   find,
   update,
   validate,
-  remove
+  remove,
 };
 
 function find() {
@@ -40,14 +40,16 @@ async function update(id, changes) {
     .then(() => getById(id));
 }
 async function remove(id) {
-  return await db('games').where({id}).del();
+  return await db('games')
+    .where({ id })
+    .del();
 }
 
 function validate(user) {
   const schema = Joi.object().keys({
     name: Joi.string(),
     last_played: Joi.date().timestamp(),
-    logo_url: Joi.string().uri()
+    logo_url: Joi.string().uri(),
   });
 
   return Joi.validate(user, schema);
