@@ -8,7 +8,7 @@ exports.up = function(knex) {
           .string('name', 128)
           .notNullable()
           .unique();
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+        tbl.timestamps(true,true);
         tbl.integer('game_limit').notNullable();
         tbl.integer('round_limit').notNullable();
         tbl.integer('question_limit').notNullable();
@@ -46,14 +46,14 @@ exports.up = function(knex) {
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('name', 128);
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+        tbl.timestamps(true,true);
       })
       //Games Table
       .createTable('games', tbl => {
         tbl.increments();
         tbl.string('name', 128).notNullable();
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
-        tbl.string('last_played', 128).notNullable();
+        tbl.timestamps(true,true);
+        tbl.timestamp('last_played').defaultTo(knex.fn.now());
         tbl
           .integer('user_id')
           .unsigned()
@@ -73,7 +73,7 @@ exports.up = function(knex) {
           .inTable('games')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+        tbl.timestamps(true,true);
         tbl.integer('number').notNullable();
       })
       //Question types table
@@ -81,7 +81,6 @@ exports.up = function(knex) {
         tbl.increments();
         tbl.string('name', 128);
       })
-
       //Questions table
       .createTable('questions', tbl => {
         tbl.increments();
@@ -108,7 +107,7 @@ exports.up = function(knex) {
           .onUpdate('CASCADE');
         tbl.string('body', 128).notNullable();
         tbl.string('difficulty', 128);
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
+        tbl.timestamps(true,true);
         tbl
           .integer('round_id')
           .unsigned()
@@ -121,21 +120,14 @@ exports.up = function(knex) {
       .createTable('answers', tbl => {
         tbl.increments();
         tbl
-          .integer('user_id')
-          .unsigned()
-          .references('id')
-          .inTable('users')
-          .onDelete('CASCADE')
-          .onUpdate('CASCADE');
-        tbl
           .integer('question_id')
           .unsigned()
           .references('id')
           .inTable('questions')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
+        tbl.string('text', 128).notNullable();
         tbl.boolean('is_correct').notNullable();
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
   );
 };
