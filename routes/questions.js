@@ -29,11 +29,17 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const changes = req.body;
-
   const updated = await Questions.update(id, changes);
-  if (updated) {
-    res.status(200).json(updated);
-  } else {
-    res.status(500).json({ message: 'Error: Could not update question' });
-  }
+  updated
+    ? res.status(200).json(updated)
+    : res.status(500).json({ message: 'Error: Could not update question' });
+});
+
+// POST --> /api/questions
+router.post('/', async (req, res) => {
+  const newQuestion = req.body;
+  const inserted = await Questions.insert(newQuestion);
+  inserted 
+    ? res.status(200).json(inserted)
+    : res.status(500).json({ message: 'Error: Could not add question' });
 });

@@ -31,7 +31,7 @@ async function update(id, changes) {
     .then(() => getById(id));
 }
 
-async function insert(game) {
+async function insert(question) {
   return await db('questions')
     .insert(question, 'id')
     .then(ids => getById(ids[0]));
