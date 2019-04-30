@@ -6,7 +6,20 @@ module.exports = {
   getById,
   update,
   deleteItem,
+  find,
+  withUserId
 };
+
+function find() {
+  return db('rounds');
+}
+
+function withUserId(queryBuilder, user_id) {
+  return queryBuilder
+    .select('rounds.*')
+    .leftJoin('games', 'games.id', '=', 'rounds.game_id')
+    .where('games.user_id', user_id);
+}
 
 async function get() {
   const rounds = await db('rounds');

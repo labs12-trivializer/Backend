@@ -5,7 +5,8 @@ const Rounds = require('../models/rounds');
 
 //returns all rounds ('/api/rounds')
 router.get('/', async (req, res) => {
-  const rounds = await Rounds.get();
+  const userId = req.user.dbInfo.id;
+  const rounds = await Rounds.find().modify(Rounds.withUserId, userId);
   if (rounds) {
     res.status(200).json(rounds);
   } else {
@@ -15,8 +16,22 @@ router.get('/', async (req, res) => {
 
 //get round by id ('/api/rounds/:id')
 router.get('/:id', async (req, res) => {
+  const userId = req.user.dbInfo.id;
   const { id } = req.params;
-  const round = await Rounds.getById(id);
+  const round = await Rounds.find()
+    .modify(Rounds.withUserId, userId)
+    .where('rounds.id', id)
+    .first();
+
+  if (!round) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No round with that id found for this user' }]
+      }
+    });
+  }
+
   if (round) {
     res.status(200).json(round);
   } else {
@@ -38,9 +53,23 @@ router.post('/', async (req, res) => {
 //edit an existing round ('/api/rounds/:id')
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.dbInfo.id;
+  const round = await Rounds.find()
+    .modify(Rounds.withUserId, userId)
+    .where('rounds.id', id)
+    .first();
+
+  if (!round) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No round with that id found for this user' }]
+      }
+    });
+  }
+
   const changes = req.body;
   const updated = await Rounds.update(id, changes);
-  console.log(updated);
   if (updated) {
     res.status(200).json(updated);
   } else {
@@ -51,8 +80,22 @@ router.put('/:id', async (req, res) => {
 //delete an existing round ('/api/rounds/:id')
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.dbInfo.id;
+  const round = await Rounds.find()
+    .modify(Rounds.withUserId, userId)
+    .where('rounds.id', id)
+    .first();
+
+  if (!round) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No round with that id found for this user' }]
+      }
+    });
+  }
+
   const deleted = await Rounds.deleteItem(id);
-  console.log(deleted);
   if (deleted) {
     res.status(200).json({ message: 'item deleted' });
   } else {

@@ -1,26 +1,17 @@
 const router = require('express').Router();
 
-const jwtCheck = require('../middleware/restricted');
-const lookupUser = require('../middleware/lookupUser');
-
 const Games = require('../models/games');
-
-// require valid token
-router.use(jwtCheck);
 
 // get all user games
 router.get('/', async (req, res) => {
-  const currentUserId = req.user.sub;
-  const games = await Games.find()
-    .select('games.*')
-    .leftJoin('users', 'users.id', '=', 'games.user_id')
-    .where('users.auth0_id', currentUserId);
+  const user_id = req.user.dbInfo.id;
+  const games = await Games.find().where({ user_id });
 
   return res.status(200).json(games);
 });
 
 // read game
-router.get('/:id', lookupUser, async (req, res) => {
+router.get('/:id', async (req, res) => {
   const user_id = req.user.dbInfo.id;
   const { id } = req.params;
   const game = await Games.find()
@@ -41,7 +32,7 @@ router.get('/:id', lookupUser, async (req, res) => {
 });
 
 // update game
-router.put('/:id', lookupUser, async (req, res) => {
+router.put('/:id', async (req, res) => {
   const currentUserId = req.user.sub;
   const { body: editedGame } = req;
 
@@ -73,7 +64,7 @@ router.put('/:id', lookupUser, async (req, res) => {
 });
 
 // create game
-router.post('/', lookupUser, async (req, res) => {
+router.post('/', async (req, res) => {
   const { body: newGame } = req;
 
   const validationResult = Games.validate(newGame);
@@ -88,7 +79,7 @@ router.post('/', lookupUser, async (req, res) => {
 });
 
 // destroy game
-router.delete('/:id', lookupUser, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   const user_id = req.user.dbInfo.id;
   const game = await Games.find()
     .where({ user_id })
