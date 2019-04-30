@@ -10,7 +10,7 @@ exports.seed = async function(knex) {
 
   const games = [];
 
-  for(let i = 0; i < 400; i++) {
+  for(let i = 0; i < 50; i++) {
     games.push({
       name: faker.commerce.productName(),
       user_id: randomItem(dbUsers).id,
