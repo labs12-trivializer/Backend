@@ -9,7 +9,7 @@ module.exports = {
   update,
   validate,
   remove,
-  findByIdAndUserId
+  findByIdAndUserId,
 };
 
 function find() {
@@ -40,18 +40,18 @@ async function findByIdAndUserId(id, user_id) {
 
   const answeredQuestions = questions.map(q => ({
     ...q,
-    answers: answers.filter(a => q.id === a.question_id)
+    answers: answers.filter(a => q.id === a.question_id),
   }));
 
   const questionedRounds = rounds.map(r => ({
     ...r,
-    questions: answeredQuestions.filter(q => r.id === q.round_id)
-  }))
+    questions: answeredQuestions.filter(q => r.id === q.round_id),
+  }));
 
   return {
     ...game,
-    rounds: questionedRounds
-  }
+    rounds: questionedRounds,
+  };
 }
 
 async function get() {
@@ -88,7 +88,7 @@ function validate(user) {
   const schema = Joi.object().keys({
     name: Joi.string(),
     last_played: Joi.date().timestamp(),
-    logo_url: Joi.string().uri()
+    logo_url: Joi.string().uri(),
   });
 
   return Joi.validate(user, schema);

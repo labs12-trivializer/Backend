@@ -7,7 +7,7 @@ module.exports = {
   insert,
   validate,
   find,
-  update
+  update,
 };
 
 function find() {
@@ -51,5 +51,3 @@ function validate(category) {
 
   return Joi.validate(category, schema);
 }
-
-
