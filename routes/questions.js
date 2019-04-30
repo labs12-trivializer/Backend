@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
 // PUT --> /api/questions/:id
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const changes = req.body;
+  const changes = req.body
   const updated = await Questions.update(id, changes);
   updated
     ? res.status(200).json(updated)
@@ -42,4 +42,16 @@ router.post('/', async (req, res) => {
   inserted 
     ? res.status(200).json(inserted)
     : res.status(500).json({ message: 'Error: Could not add question' });
+});
+
+// DELETE --> /api/questions/:id
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const deleted = await Questions.delete(id);
+  deleted
+    ? (
+      console.log('Deleted: ', deleted);
+      res.status(200).json(deleted)
+    )
+    : res.status(404).json({ message: 'Error: Question not found' });
 });

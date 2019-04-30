@@ -5,7 +5,8 @@ module.exports = {
   get,
   getById,
   update,
-  insert
+  insert,
+  delete
 };
 
 function find() {
@@ -35,4 +36,10 @@ async function insert(question) {
   return await db('questions')
     .insert(question, 'id')
     .then(ids => getById(ids[0]));
+}
+
+async function delete(id) {
+  return await find()
+    .where({ id })
+    .del();
 }
