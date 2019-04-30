@@ -66,3 +66,5 @@ router.delete('/:id', async ({ params: { id } }, res) => {
     ? res.status(200).json({ id: deleted, message: 'Answer deleted.' })
     : res.status(404).json({ message: 'The answer does not exist.' });
 });
+
+module.exports = router;
