@@ -27,18 +27,13 @@ router.get('/:id', async (req, res) => {
 
 // PUT --> /api/questions/:id
 router.put('/:id', async (req, res) => {
-  const currentUserId = req.user.sub;
+  const { id } = req.params;
+  const changes = req.body;
 
-  const { body: user } = req;
-
-  user.auth0_id = currentUserId;
-
-
-  const validationResult = Users.validate(req.body);
-  if (validationResult.error) {
-    return res.status(422).json(validationResult);
+  const updated = await Questions.update(id, changes);
+  if (updated) {
+    res.status(200).json(updated);
+  } else {
+    res.status(500).json({ message: 'Error: Could not update question' });
   }
-
-  const updatedUser = await Users.update(currentUserId, user);
-  return res.status(200).json(updatedUser);
 });
