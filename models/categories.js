@@ -1,5 +1,5 @@
 const db = require('../data/db');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 module.exports = {
   get,
@@ -51,4 +51,5 @@ function validate(category) {
 
   return Joi.validate(category, schema);
 }
+
 

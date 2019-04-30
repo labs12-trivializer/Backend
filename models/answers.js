@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const db = require('../data/db');
 
 module.exports = {
@@ -33,3 +33,4 @@ module.exports = {
     return Joi.validate(answer, schema);
   }
 };
+
