@@ -9,6 +9,7 @@ const questions = require('./questions');
 const categories = require('./categories');
 const games = require('./games');
 const rounds = require('./rounds');
+const answers = require('./answers');
 const lookupUser = require('../middleware/lookupUser');
 
 module.exports = server => {
@@ -23,6 +24,7 @@ module.exports = server => {
   server.use('/api/rounds', restricted, lookupUser, rounds);
   server.use('/api/questions', questions);
   // server.use('/api/answers', answers);
+  server.use('/api/answers', restricted, answers);
   server.use('/api/question_types', restricted, questionTypes);
   server.use('/api/categories', restricted, categories);
   server.use('/api/tiers', restricted, tiers);
