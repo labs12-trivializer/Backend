@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
 
 // GET --> /api/questions/:id
 router.get('/:id', async (req, res) => {
+  console.log('REQ PARAMS: ', req.params);
   const { id } = req.params;
   const question = await Questions.getById(id);
   question.length > 0
