@@ -15,7 +15,31 @@ router.post('/customer', (req, res) => {
     },
     function(err, customer) {
       // asynchronously called
-      res.status(200).json(customer);
+      if (err) {
+        res.status(404).json(err);
+      } else {
+        res.status(200).json(customer);
+      }
+    }
+  );
+});
+
+//create subscription
+router.post('/subscribe', (req, res) => {
+  const { customer, plan } = req.body;
+
+  stripe.subscriptions.create(
+    {
+      customer: customer,
+      items: [{ plan: plan }],
+    },
+    function(err, subscription) {
+      // asynchronously called
+      if (err) {
+        res.status(402).json(err);
+      } else {
+        res.status(200).json(subscription);
+      }
     }
   );
 });
