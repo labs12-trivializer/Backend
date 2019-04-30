@@ -319,7 +319,7 @@ Example:
     "user_id": 1,
     "question_type_id": 1,
     "category_id": 1,
-    "body": "A walrus makes what sound?",
+    "text": "A walrus makes what sound?",
     "difficulty": "Easy",
     "timestamps": "2019-04-30 19:47:24",
     "round_id": 1
@@ -329,7 +329,7 @@ Example:
     "user_id": 1,
     "question_type_id": 1,
     "category_id": 1,
-    "body": "What Philly celebrity would you want to have a drink with?",
+    "text": "What Philly celebrity would you want to have a drink with?",
     "difficulty": "Easy",
     "timestamps": "2019-04-30 19:47:24",
     "round_id": 1
@@ -354,7 +354,7 @@ Example:
     "user_id": 1,
     "question_type_id": 1,
     "category_id": 1,
-    "body": "What Philly celebrity would you want to have a drink with?",
+    "text": "What Philly celebrity would you want to have a drink with?",
     "difficulty": "Easy",
     "timestamps": "2019-04-30 19:47:24",
     "round_id": 1
@@ -375,7 +375,7 @@ Example:
   "user_id": 1, // integer
   "question_type_id": 1, // integer
   "category_id": 2, // integer
-  "body": "What color pill does Neo take from Morpheus?", // string, max 128 chars, required
+  "text": "What color pill does Neo take from Morpheus?", // string, max 128 chars, required
   "difficulty": "Medium", // string, max 128 chars
   "timestamps": "2019-04-30 21:35:22", // timestamp, optional
   "round_id": 2 // integer
@@ -392,7 +392,7 @@ Example:
   "user_id": 1,
   "question_type_id": 1,
   "category_id": 2,
-  "body": "What color pill does Neo take from Morpheus?",
+  "text": "What color pill does Neo take from Morpheus?",
   "difficulty": "Medium",
   "timestamps": "2019-04-30 21:35:22",
   "round_id": 2
@@ -413,7 +413,7 @@ Example:
   "user_id": 1,
   "question_type_id": 1,
   "category_id": 2,
-  "body": "Who does Neo take a colored pill from?",
+  "text": "Who does Neo take a colored pill from?",
   "difficulty": "Medium",
   "timestamps": "2019-04-30 21:35:22",
   "round_id": 2
@@ -437,7 +437,7 @@ Example:
     "user_id": 1,
     "question_type_id": 1,
     "category_id": 1,
-    "body": "An example question should ask what?",
+    "text": "An example question should ask what?",
     "difficulty": "Medium",
     "timestamps": "2019-04-30 21:35:22",
     "round_id": 2
