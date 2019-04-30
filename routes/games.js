@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const jwtCheck = require('../middleware/jwtCheck');
+const jwtCheck = require('../middleware/restricted');
 const lookupUser = require('../middleware/lookupUser');
 
 const Games = require('../models/games');

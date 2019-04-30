@@ -6,7 +6,7 @@ module.exports = {
   getById,
   update,
   insert,
-  delete
+  deleteQuestion
 };
 
 function find() {
@@ -19,10 +19,9 @@ async function get() {
 }
 
 async function getById(id) {
-  const question = await find()
+  return await find()
     .where({ id })
     .first();
-  return question;
 }
 
 async function update(id, changes) {
@@ -38,8 +37,8 @@ async function insert(question) {
     .then(ids => getById(ids[0]));
 }
 
-async function delete(id) {
-  return await find()
+async function deleteQuestion(id) {
+  return await db('questions')
     .where({ id })
     .del();
 }
