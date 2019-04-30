@@ -7,7 +7,8 @@ module.exports = {
   insert,
   find,
   update,
-  validate
+  validate,
+  remove
 };
 
 function find() {
@@ -37,6 +38,9 @@ async function update(id, changes) {
     .where({ id })
     .update(changes)
     .then(() => getById(id));
+}
+async function remove(id) {
+  return await db('games').where({id}).del();
 }
 
 function validate(user) {
