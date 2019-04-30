@@ -1,11 +1,13 @@
 const db = require('../data/db');
+const Joi = require('joi');
 
 module.exports = {
   get,
   getById,
   insert,
   find,
-  update
+  update,
+  validate
 };
 
 function find() {
@@ -35,4 +37,14 @@ async function update(id, changes) {
     .where({ id })
     .update(changes)
     .then(() => getById(id));
+}
+
+function validate(user) {
+  const schema = Joi.object().keys({
+    name: Joi.string(),
+    last_played: Joi.date().timestamp(),
+    logo_url: Joi.string().uri()
+  });
+
+  return Joi.validate(user, schema);
 }
