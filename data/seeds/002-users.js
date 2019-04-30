@@ -1,5 +1,7 @@
 const faker = require('faker');
 
+const randomItem = require('./helpers/randomItem');
+
 faker.seed(123);
 
 knownUserIds = [
@@ -11,10 +13,6 @@ knownUserIds = [
 goldId = 'auth0|5cc3a234a32cf50eb0e7ad69';
 silverId = 'auth0|5cc3a1da2ae95a1148a02792';
 bronzeId = 'auth0|5cc3a1a928671f107e999a8c';
-
-const randomItem = array => {
-  return array[Math.floor(Math.random() * array.length)];
-};
 
 exports.seed = async function(knex) {
   const dbTiers = await knex('tiers');

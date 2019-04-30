@@ -105,25 +105,25 @@ Example:
 
 ```js
 [
- {
-    "id": 1,
-    "name": "Handcrafted Concrete Table",
-    "created_at": "2019-04-30 02:54:13",
-    "updated_at": "2019-04-30 02:54:13",
-    "last_played": 1556518098409,
-    "user_id": 506,
-    "logo_url": "http://lorempixel.com/640/480/business"
+  {
+    id: 1,
+    name: 'Handcrafted Concrete Table',
+    created_at: '2019-04-30 02:54:13',
+    updated_at: '2019-04-30 02:54:13',
+    last_played: 1556518098409,
+    user_id: 506,
+    logo_url: 'http://lorempixel.com/640/480/business',
   },
   {
-    "id": 5,
-    "name": "Handcrafted Frozen Shoes",
-    "created_at": "2019-04-30 02:54:13",
-    "updated_at": "2019-04-30 02:54:13",
-    "last_played": 1556531295844,
-    "user_id": 506,
-    "logo_url": "http://lorempixel.com/640/480/business"
+    id: 5,
+    name: 'Handcrafted Frozen Shoes',
+    created_at: '2019-04-30 02:54:13',
+    updated_at: '2019-04-30 02:54:13',
+    last_played: 1556531295844,
+    user_id: 506,
+    logo_url: 'http://lorempixel.com/640/480/business',
   },
-]
+];
 ```
 
 ## [GET] game by id
@@ -461,18 +461,18 @@ Example:
 ```js
 [
   {
-    "id": 1,
-    "question_id": 3,
-    "text": "true",
-    "is_correct": true,
+    id: 1,
+    question_id: 3,
+    text: 'true',
+    is_correct: true,
   },
   {
-    "id": 2,
-    "question_id": 3,
-    "text": "false",
-    "is_correct": false
-  }
-]
+    id: 2,
+    question_id: 3,
+    text: 'false',
+    is_correct: false,
+  },
+];
 ```
 
 ## [POST] new answer
@@ -534,5 +534,207 @@ Example:
 {
   "id": 5,
   "message": "Answer deleted."
+}
+```
+
+# Resource: Billing
+
+## Create Customer with Stripe
+
+## [POST] to `/api/billing//customer` with object similair to the one below. Does not have to be exact (stripe will create a new customer even if an empty object is sent). Other parameters include "description", "source", "metadata", etc. (https://stripe.com/docs/api/customers/create)
+
+```js
+{
+  "name": "Test User",
+  "email": "test325@testmail.com",
+}
+```
+
+**Returns**
+
+```js
+{
+  "id": "cus_EyxwhgzEAyOluE",
+  "object": "customer",
+  "account_balance": 0,
+  "address": null,
+  "created": 1556646307,
+  "currency": null,
+  "default_source": "card_1EV00tJSYEQ0YOhP97XWQ5to",
+  "delinquent": false,
+  "description": null,
+  "discount": null,
+  "email": "test325@testmail.com",
+  "invoice_prefix": "57D4B657",
+  "invoice_settings": {
+    "custom_fields": null,
+    "default_payment_method": null,
+    "footer": null
+  },
+  "livemode": false,
+  "metadata": {},
+  "name": "Test User",
+  "phone": null,
+  "preferred_locales": [],
+  "shipping": null,
+  "sources": {
+    "object": "list",
+    "data": [
+      {
+        "id": "card_1EV00tJSYEQ0YOhP97XWQ5to",
+        "object": "card",
+        "address_city": null,
+        "address_country": null,
+        "address_line1": null,
+        "address_line1_check": null,
+        "address_line2": null,
+        "address_state": null,
+        "address_zip": null,
+        "address_zip_check": null,
+        "brand": "American Express",
+        "country": "US",
+        "customer": "cus_EyxwhgzEAyOluE",
+        "cvc_check": null,
+        "dynamic_last4": null,
+        "exp_month": 4,
+        "exp_year": 2020,
+        "fingerprint": "FhzSRBK5EEpnIzaW",
+        "funding": "credit",
+        "last4": "8431",
+        "metadata": {},
+        "name": null,
+        "tokenization_method": null
+      }
+    ],
+    "has_more": false,
+    "total_count": 1,
+    "url": "/v1/customers/cus_EyxwhgzEAyOluE/sources"
+  },
+  "subscriptions": {
+    "object": "list",
+    "data": [],
+    "has_more": false,
+    "total_count": 0,
+    "url": "/v1/customers/cus_EyxwhgzEAyOluE/subscriptions"
+  },
+  "tax_exempt": "none",
+  "tax_ids": {
+    "object": "list",
+    "data": [],
+    "has_more": false,
+    "total_count": 0,
+    "url": "/v1/customers/cus_EyxwhgzEAyOluE/tax_ids"
+  },
+  "tax_info": null,
+  "tax_info_verification": null
+}
+```
+
+## Subscribe Customer to one of the two paid payment plans (silver or gold)
+
+## [POST] to `/api/billing//subscribe` with object that includes customer (id in response above), and plan id:
+
+```js
+{
+  {
+	"customer": "cus_EyxwhgzEAyOluE",
+	"plan": "plan_Eyw9DUPvzcFMvK"  //gold plan id
+}
+}
+```
+
+**Returns**
+
+```js
+{
+  "id": "sub_EyxxnzjeqZjffL",
+  "object": "subscription",
+  "application_fee_percent": null,
+  "billing": "charge_automatically",
+  "billing_cycle_anchor": 1556646341,
+  "billing_thresholds": null,
+  "cancel_at": null,
+  "cancel_at_period_end": false,
+  "canceled_at": null,
+  "created": 1556646341,
+  "current_period_end": 1588268741,
+  "current_period_start": 1556646341,
+  "customer": "cus_EyxwhgzEAyOluE",
+  "days_until_due": null,
+  "default_payment_method": null,
+  "default_source": null,
+  "default_tax_rates": [],
+  "discount": null,
+  "ended_at": null,
+  "items": {
+    "object": "list",
+    "data": [
+      {
+        "id": "si_EyxxhoNMSQ4Hv0",
+        "object": "subscription_item",
+        "billing_thresholds": null,
+        "created": 1556646342,
+        "metadata": {},
+        "plan": {
+          "id": "plan_Eyw9DUPvzcFMvK",
+          "object": "plan",
+          "active": true,
+          "aggregate_usage": null,
+          "amount": 2999,
+          "billing_scheme": "per_unit",
+          "created": 1556639654,
+          "currency": "usd",
+          "interval": "year",
+          "interval_count": 1,
+          "livemode": false,
+          "metadata": {},
+          "nickname": "gold",
+          "product": "prod_Eyw95cKae2d39F",
+          "tiers": null,
+          "tiers_mode": null,
+          "transform_usage": null,
+          "trial_period_days": null,
+          "usage_type": "licensed"
+        },
+        "quantity": 1,
+        "subscription": "sub_EyxxnzjeqZjffL",
+        "tax_rates": []
+      }
+    ],
+    "has_more": false,
+    "total_count": 1,
+    "url": "/v1/subscription_items?subscription=sub_EyxxnzjeqZjffL"
+  },
+  "latest_invoice": "in_1EV01SJSYEQ0YOhPXstvNIrC",
+  "livemode": false,
+  "metadata": {},
+  "plan": {
+    "id": "plan_Eyw9DUPvzcFMvK",
+    "object": "plan",
+    "active": true,
+    "aggregate_usage": null,
+    "amount": 2999,
+    "billing_scheme": "per_unit",
+    "created": 1556639654,
+    "currency": "usd",
+    "interval": "year",
+    "interval_count": 1,
+    "livemode": false,
+    "metadata": {},
+    "nickname": "gold",
+    "product": "prod_Eyw95cKae2d39F",
+    "tiers": null,
+    "tiers_mode": null,
+    "transform_usage": null,
+    "trial_period_days": null,
+    "usage_type": "licensed"
+  },
+  "quantity": 1,
+  "schedule": null,
+  "start": 1556646341,
+  "status": "active",
+  "tax_percent": null,
+  "trial_end": null,
+  "trial_start": null
 }
 ```

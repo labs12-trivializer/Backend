@@ -1,10 +1,8 @@
 const faker = require('faker');
 
-faker.seed(123);
+const randomItem = require('./helpers/randomItem');
 
-const randomItem = array => {
-  return array[Math.floor(Math.random() * array.length)];
-};
+faker.seed(123);
 
 exports.seed = async function(knex) {
   // get an array of users with valid auth0_ids
@@ -12,7 +10,7 @@ exports.seed = async function(knex) {
 
   const games = [];
 
-  for(let i = 0; i < 400; i++) {
+  for(let i = 0; i < 50; i++) {
     games.push({
       name: faker.commerce.productName(),
       user_id: randomItem(dbUsers).id,

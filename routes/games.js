@@ -14,10 +14,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const user_id = req.user.dbInfo.id;
   const { id } = req.params;
-  const game = await Games.find()
-    .where({ id })
-    .where({ user_id })
-    .first();
+  const game = await Games.findByIdAndUserId(id, user_id);
 
   if (!game) {
     return res.status(404).json({
