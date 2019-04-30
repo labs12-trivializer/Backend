@@ -183,3 +183,92 @@
 # Resource: Questions
 
 # Resource: Answers
+
+## [GET] answer by _question_ id
+
+**URL:** `/api/answers/:id`
+
+**Restricted:** User must be logged in.
+
+**Returns:** an array of answer objects.
+
+Example:
+
+```js
+[
+  {
+    "id": 1,
+    "question_id": 3,
+    "text": "true",
+    "is_correct": true,
+  },
+  {
+    "id": 2,
+    "question_id": 3,
+    "text": "false",
+    "is_correct": false
+  }
+]
+```
+
+## [POST] new answer
+
+**URL:** `/api/answers`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "question_id": 1,   // number, foreign key, required
+  "text": "yes",      // string, max 128 chars, required
+  "is_correct": true  // boolean, required
+}
+```
+
+**Returns:** a new answer object.
+
+Example:
+
+```js
+{
+  "id": 1,
+  "question_id": 1,
+  "text": "yes",
+  "is_correct": true
+}
+```
+
+## [PUT] answer
+
+**URL:** `/api/answers/:id`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "question_id": 1,   // number, foreign key, required
+  "text": "yes",      // string, max 128 chars, optional
+  "is_correct": true  // boolean, optional
+}
+```
+
+**Returns:** an updated answer object.
+
+## [DELETE] answer
+
+**URL:** `/api/answers/:id`
+
+**Restricted:** User must be logged in.
+
+**Returns:** a success message.
+
+```js
+{
+  "id": 5,
+  "message": "Answer deleted."
+}
+```
