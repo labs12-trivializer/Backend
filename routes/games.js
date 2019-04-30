@@ -19,7 +19,28 @@ router.get('/', async (req, res) => {
   return res.status(200).json(games);
 });
 
-// edit game
+// read game
+router.get('/:id', lookupUser, async (req, res) => {
+  const user_id = req.user.dbInfo.id;
+  const { id } = req.params;
+  const game = await Games.find()
+    .where({ id })
+    .where({ user_id })
+    .first();
+
+  if (!game) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No game with that id found for this user' }]
+      }
+    });
+  }
+
+  return res.status(200).json(game);
+});
+
+// update game
 router.put('/:id', lookupUser, async (req, res) => {
   const currentUserId = req.user.sub;
   const { body: editedGame } = req;
@@ -74,7 +95,7 @@ router.delete('/:id', lookupUser, async (req, res) => {
     .where('games.id', req.params.id)
     .first();
 
-  if(!game) {
+  if (!game) {
     return res.status(404).json({
       error: {
         name: 'ValidationError',
