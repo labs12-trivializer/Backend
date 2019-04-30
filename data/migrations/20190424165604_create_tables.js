@@ -85,13 +85,6 @@ exports.up = function(knex) {
       .createTable('questions', tbl => {
         tbl.increments();
         tbl
-          .integer('user_id')
-          .unsigned()
-          .references('id')
-          .inTable('users')
-          .onDelete('CASCADE')
-          .onUpdate('CASCADE');
-        tbl
           .integer('question_type_id')
           .unsigned()
           .references('id')
@@ -105,7 +98,7 @@ exports.up = function(knex) {
           .inTable('categories')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
-        tbl.string('body', 128).notNullable();
+        tbl.string('text', 128).notNullable();
         tbl.string('difficulty', 128);
         tbl.timestamps(true,true);
         tbl
