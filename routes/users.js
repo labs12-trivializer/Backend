@@ -1,10 +1,6 @@
 const router = require('express').Router();
 
-const jwtCheck = require('../middleware/jwtCheck');
 const Users = require('../models/users');
-
-// require valid token
-router.use(jwtCheck);
 
 // user profile route
 router.get('/my_profile', async (req, res) => {

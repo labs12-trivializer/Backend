@@ -93,6 +93,126 @@
 
 # Resource: Games
 
+## [GET] all user's games
+
+**URL:** `/api/games`
+
+**Restricted:** User must be logged in.
+
+**Returns:** an array of game objects.
+
+Example:
+
+```js
+[
+ {
+    "id": 1,
+    "name": "Handcrafted Concrete Table",
+    "created_at": "2019-04-30 02:54:13",
+    "updated_at": "2019-04-30 02:54:13",
+    "last_played": 1556518098409,
+    "user_id": 506,
+    "logo_url": "http://lorempixel.com/640/480/business"
+  },
+  {
+    "id": 5,
+    "name": "Handcrafted Frozen Shoes",
+    "created_at": "2019-04-30 02:54:13",
+    "updated_at": "2019-04-30 02:54:13",
+    "last_played": 1556531295844,
+    "user_id": 506,
+    "logo_url": "http://lorempixel.com/640/480/business"
+  },
+]
+```
+
+## [GET] game by id
+
+**URL:** `/api/games/:id`
+
+**Restricted:** User must be logged in, User must own game.
+
+**Returns:** an array of game objects.
+
+Example:
+
+```js
+{
+  "id": 6,
+  "name": "Rustic Concrete Hat",
+  "created_at": "2019-04-30 16:16:20",
+  "updated_at": "2019-04-30 16:16:20",
+  "last_played": 1556583501055,
+  "user_id": 506,
+  "logo_url": "http://lorempixel.com/640/480/business"
+}
+```
+
+## [POST] new game
+
+**URL:** `/api/games`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "name": "test game name", // string, limit 128 chars, required
+  "last_played": "1556443408624", // timestamp, optional
+  "logo_url": "http://lorempixel.com/640/480/business" // string, valid uri format, optional
+}
+```
+
+**Returns:** a new game object.
+
+Example:
+
+```js
+{
+  "id": 412,
+  "name": "test game name",
+  "created_at": "2019-04-30 05:42:13",
+  "updated_at": "2019-04-30 05:42:13",
+  "last_played": 1556443408624,
+  "user_id": 506,
+  "logo_url": "http://lorempixel.com/640/480/business"
+}
+```
+
+## [PUT] game
+
+**URL:** `/api/games/:id`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "name": "test game name", // string, limit 128 chars, required
+  "last_played": "1556443408624", // timestamp, optional
+  "logo_url": "http://lorempixel.com/640/480/business" // string, valid uri format, optional
+}
+```
+
+**Returns:** an updated game object.
+
+## [DELETE] game
+
+**URL:** `/api/games/:id`
+
+**Restricted:** User must be logged in.
+
+**Returns:** a success message.
+
+```js
+{
+  "id": 5,
+  "message": "Game deleted."
+}
+```
+
 # Resource: Rounds
 
 ```javascript
@@ -183,3 +303,92 @@
 # Resource: Questions
 
 # Resource: Answers
+
+## [GET] answer by _question_ id
+
+**URL:** `/api/answers/:id`
+
+**Restricted:** User must be logged in.
+
+**Returns:** an array of answer objects.
+
+Example:
+
+```js
+[
+  {
+    "id": 1,
+    "question_id": 3,
+    "text": "true",
+    "is_correct": true,
+  },
+  {
+    "id": 2,
+    "question_id": 3,
+    "text": "false",
+    "is_correct": false
+  }
+]
+```
+
+## [POST] new answer
+
+**URL:** `/api/answers`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "question_id": 1,   // number, foreign key, required
+  "text": "yes",      // string, max 128 chars, required
+  "is_correct": true  // boolean, required
+}
+```
+
+**Returns:** a new answer object.
+
+Example:
+
+```js
+{
+  "id": 1,
+  "question_id": 1,
+  "text": "yes",
+  "is_correct": true
+}
+```
+
+## [PUT] answer
+
+**URL:** `/api/answers/:id`
+
+**Restricted:** User must be logged in.
+
+**Payload:** an object with the following properties.
+
+```js
+{
+  "question_id": 1,   // number, foreign key, required
+  "text": "yes",      // string, max 128 chars, optional
+  "is_correct": true  // boolean, optional
+}
+```
+
+**Returns:** an updated answer object.
+
+## [DELETE] answer
+
+**URL:** `/api/answers/:id`
+
+**Restricted:** User must be logged in.
+
+**Returns:** a success message.
+
+```js
+{
+  "id": 5,
+  "message": "Answer deleted."
+}
+```
