@@ -9,10 +9,49 @@ module.exports = {
   update,
   validate,
   remove,
+  findByIdAndUserId,
 };
 
 function find() {
   return db('games');
+}
+
+async function findByIdAndUserId(id, user_id) {
+  const game = await db('games')
+    .where({ id })
+    .where({ user_id })
+    .first();
+
+  if (!game) {
+    return null;
+  }
+
+  const rounds = await db('rounds').where({ game_id: game.id });
+
+  const questions = await db('questions').whereIn(
+    'round_id',
+    rounds.map(r => r.id)
+  );
+
+  const answers = await db('answers').whereIn(
+    'question_id',
+    questions.map(q => q.id)
+  );
+
+  const answeredQuestions = questions.map(q => ({
+    ...q,
+    answers: answers.filter(a => q.id === a.question_id),
+  }));
+
+  const questionedRounds = rounds.map(r => ({
+    ...r,
+    questions: answeredQuestions.filter(q => r.id === q.round_id),
+  }));
+
+  return {
+    ...game,
+    rounds: questionedRounds,
+  };
 }
 
 async function get() {

@@ -72,3 +72,4 @@ function validate(user) {
 
   return Joi.validate(user, schema);
 }
+

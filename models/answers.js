@@ -47,3 +47,4 @@ module.exports = {
     return Joi.validate(answer, schema);
   },
 };
+
