@@ -5,6 +5,7 @@ const users = require('./users');
 const questionTypes = require('./questionTypes');
 const categories = require('./categories');
 const games = require('./games');
+const rounds = require('./rounds');
 
 module.exports = server => {
   server.use(logger);
@@ -15,7 +16,7 @@ module.exports = server => {
   // server.use('/api/auth', auth);
   server.use('/api/users', users);
   server.use('/api/games', games);
-  // server.use('/api/rounds', rounds);
+  server.use('/api/rounds', rounds);
   // server.use('/api/questions', questions);
   // server.use('/api/answers', answers);
   server.use('/api/question_types', questionTypes);
