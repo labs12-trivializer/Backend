@@ -81,7 +81,6 @@ exports.up = function(knex) {
         tbl.increments();
         tbl.string('name', 128);
       })
-
       //Questions table
       .createTable('questions', tbl => {
         tbl.increments();
@@ -121,21 +120,14 @@ exports.up = function(knex) {
       .createTable('answers', tbl => {
         tbl.increments();
         tbl
-          .integer('user_id')
-          .unsigned()
-          .references('id')
-          .inTable('users')
-          .onDelete('CASCADE')
-          .onUpdate('CASCADE');
-        tbl
           .integer('question_id')
           .unsigned()
           .references('id')
           .inTable('questions')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
+        tbl.string('text', 128).notNullable();
         tbl.boolean('is_correct').notNullable();
-        tbl.timestamp('timestamps').defaultTo(knex.fn.now());
       })
   );
 };
