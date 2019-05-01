@@ -6,11 +6,31 @@ module.exports = {
   getById,
   update,
   insert,
-  deleteQuestion
+  deleteQuestion,
+  findByUserId
 };
 
 function find() {
   return db('questions');
+}
+
+async function findByUserId(user_id) {
+  const questions = await db('questions')
+    .where({ user_id });
+
+  if (!questions) {
+    return null;
+  }
+
+  const answers = await db('answers').whereIn(
+    'question_id',
+    questions.map(q => q.id)
+  );
+
+  return questions.map(q => ({
+    ...q,
+    answers: answers.filter(a => q.id === a.question_id)
+  }));
 }
 
 async function get() {

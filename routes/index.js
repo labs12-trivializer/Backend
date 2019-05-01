@@ -24,7 +24,7 @@ module.exports = server => {
   server.use('/api/users', restricted, users);
   server.use('/api/games', restricted, lookupUser, games);
   server.use('/api/rounds', restricted, lookupUser, rounds);
-  server.use('/api/questions', questions);
+  server.use('/api/questions', restricted, lookupUser, questions);
   // server.use('/api/answers', answers);
   server.use('/api/billing', billing);
   server.use('/api/answers', restricted, answers);

@@ -3,12 +3,30 @@ const router = require('express').Router();
 const Questions = require('../models/questions');
 
 // GET --> /api/questions
+// router.get('/', async (req, res) => {
+//   const questions = await Questions.get();
+//   questions.length > 0
+//     ? res.status(200).json(questions)
+//     : res.status(400).json({ message: 'Error: No questions found.' });
+// })
+
+// GET questions by user_id
 router.get('/', async (req, res) => {
-  const questions = await Questions.get();
-  questions.length > 0
-    ? res.status(200).json(questions)
-    : res.status(400).json({ message: 'Error: No questions found.' });
-})
+  const user_id = req.user.dbInfo.id;
+  // const { id } = req.params;
+  const questions = await Questions.findByUserId(user_id);
+
+  if (!questions) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No questions by this user could be found.' }]
+      }
+    });
+  }
+
+  return res.status(200).json(questions);
+});
 
 // GET --> /api/questions/:id
 router.get('/:id', async (req, res) => {
@@ -19,6 +37,7 @@ router.get('/:id', async (req, res) => {
     ? res.status(200).json(question)
     : res.status(400).json({ message: 'Error: Question not found.' });
 })
+
 
 // PUT --> /api/questions/:id
 router.put('/:id', async (req, res) => {
