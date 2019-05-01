@@ -10,6 +10,42 @@ router.get('/', async (req, res) => {
   return res.status(200).json(games);
 });
 
+// get all user games
+router.get('/normalized', async (req, res) => {
+  const user_id = req.user.dbInfo.id;
+  const games = await Games.find().where({ user_id });
+
+  const normalized = {
+    result: games.map(g => g.id),
+    entities: {
+      games: games.reduce((accu, cur) => {
+        accu[cur.id] = cur;
+        return accu;
+      }, {})
+    }
+  };
+
+  return res.status(200).json(normalized);
+});
+
+// read game, normalized response
+router.get('/normalized/:id', async (req, res) => {
+  const user_id = req.user.dbInfo.id;
+  const { id } = req.params;
+  const result = await Games.findByIdAndUserIdNormalized(id, user_id);
+
+  if (!result) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No game with that id found for this user' }]
+      }
+    });
+  }
+
+  return res.status(200).json(result);
+});
+
 // read game
 router.get('/:id', async (req, res) => {
   const user_id = req.user.dbInfo.id;
