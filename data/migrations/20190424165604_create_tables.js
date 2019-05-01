@@ -12,7 +12,7 @@ exports.up = function(knex) {
         tbl.integer('game_limit').notNullable();
         tbl.integer('round_limit').notNullable();
         tbl.integer('question_limit').notNullable();
-        tbl.string('stripe_product_id').notNullable();
+        tbl.string('stripe_product_id');
         tbl.string('stripe_plan_id');
       })
       //Users table
