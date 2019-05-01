@@ -108,6 +108,13 @@ exports.up = function(knex) {
           .inTable('rounds')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
+        tbl
+          .integer('user_id')
+          .unsigned()
+          .references('id')
+          .inTable('users')
+          .onDelete('CASCADE')
+          .onUpdate('CASCADE');
       })
       //Answers table
       .createTable('answers', tbl => {
