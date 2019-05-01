@@ -3,3 +3,4 @@ node_modules
 .vscode
 logs
 requests.http
+yarn.lock

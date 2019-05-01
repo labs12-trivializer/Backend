@@ -8,7 +8,7 @@ module.exports = {
   validate,
   find,
   getByAuth0Id,
-  update
+  update,
 };
 
 function find() {
@@ -67,7 +67,7 @@ function validate(user) {
     tier_id: Joi.number().integer(),
     logo_url: Joi.string().uri(),
     auth0_id: Joi.string().required(),
-    avatar_url: Joi.string().uri()
+    avatar_url: Joi.string().uri(),
   });
 
   return Joi.validate(user, schema);

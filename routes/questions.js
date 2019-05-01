@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
 
 // GET --> /api/questions/:id
 router.get('/:id', async (req, res) => {
+  console.log('REQ PARAMS: ', req.params);
   const { id } = req.params;
   const question = await Questions.getById(id);
   question.length > 0
@@ -41,9 +42,15 @@ router.post('/', async (req, res) => {
 // DELETE --> /api/questions/:id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
-  const deleted = await Questions.deleteQuestion(id);
-  deleted
-    ? res.status(200).json(deleted)
+  const deleted = await Questions.find()
+    .where({ id })
+    .first();
+  await Questions.deleteQuestion(id);
+  return deleted
+    ? res.status(200).json({
+      deleted,
+      message: 'Question deleted'
+    })
     : res.status(404).json({ message: 'Error: Question not found' });
 });
 

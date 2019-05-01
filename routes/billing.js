@@ -1,17 +1,21 @@
 const router = require('express').Router();
 // Set your secret key: remember to change this to your live secret key in production
-const stripe = require('stripe')('sk_test_cS7yuzpdJwlTlCKwiBK6hGc800OsqD7XvA');
+const key = process.env.SECRET_STRIPE_KEY;
+const stripe = require('stripe')(key);
+
+router.use(require('body-parser').text());
 
 router.post('/customer', (req, res) => {
   //customer object from frontend
-  const { name, email, description } = req.body;
+  const { name, email, description, source } = req.body;
   //create customer with details sent from frontend
   stripe.customers.create(
     {
       name,
       email,
       description,
-      source: 'tok_amex', //amex token hardcoded while testing
+      source,
+      // source: 'tok_amex', //amex token hardcoded while testing
     },
     function(err, customer) {
       // asynchronously called
@@ -42,6 +46,22 @@ router.post('/subscribe', (req, res) => {
       }
     }
   );
+});
+
+//charge token sent from client
+router.post('/charge', async (req, res) => {
+  try {
+    let { status } = await stripe.charges.create({
+      // amount: 2000,
+      // currency: 'usd',
+      // description: 'An example charge',
+      // source: req.body,
+    });
+
+    res.json({ status });
+  } catch (err) {
+    res.status(500).end();
+  }
 });
 
 module.exports = router;
