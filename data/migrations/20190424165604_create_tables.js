@@ -8,12 +8,12 @@ exports.up = function(knex) {
           .string('name', 128)
           .notNullable()
           .unique();
-        tbl.timestamps(true,true);
+        tbl.timestamps(true, true);
         tbl.integer('game_limit').notNullable();
         tbl.integer('round_limit').notNullable();
         tbl.integer('question_limit').notNullable();
-        tbl.string('stripe_product_id').notNullable();
-        tbl.string('stripe_plan_id').notNullable();
+        tbl.string('stripe_product_id');
+        tbl.string('stripe_plan_id');
       })
       //Users table
       .createTable('users', tbl => {
@@ -46,13 +46,16 @@ exports.up = function(knex) {
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
         tbl.string('name', 128).notNullable();
-        tbl.integer('category_id').unsigned().notNullable();
+        tbl
+          .integer('category_id')
+          .unsigned()
+          .notNullable();
       })
       //Games Table
       .createTable('games', tbl => {
         tbl.increments();
         tbl.string('name', 128).notNullable();
-        tbl.timestamps(true,true);
+        tbl.timestamps(true, true);
         tbl.timestamp('last_played').defaultTo(knex.fn.now());
         tbl
           .integer('user_id')
@@ -73,7 +76,7 @@ exports.up = function(knex) {
           .inTable('games')
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
-        tbl.timestamps(true,true);
+        tbl.timestamps(true, true);
         tbl.integer('number').notNullable();
       })
       //Question types table
@@ -100,7 +103,7 @@ exports.up = function(knex) {
           .onUpdate('CASCADE');
         tbl.string('text', 128).notNullable();
         tbl.string('difficulty', 128);
-        tbl.timestamps(true,true);
+        tbl.timestamps(true, true);
         tbl
           .integer('round_id')
           .unsigned()

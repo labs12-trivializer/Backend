@@ -315,26 +315,26 @@ Example:
 ```js
 [
   {
-    "id": 1,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "A walrus makes what sound?",
-    "difficulty": "Easy",
-    "timestamps": "2019-04-30 19:47:24",
-    "round_id": 1
+    id: 1,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: 'A walrus makes what sound?',
+    difficulty: 'Easy',
+    timestamps: '2019-04-30 19:47:24',
+    round_id: 1,
   },
   {
-    "id": 2,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "What Philly celebrity would you want to have a drink with?",
-    "difficulty": "Easy",
-    "timestamps": "2019-04-30 19:47:24",
-    "round_id": 1
+    id: 2,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: 'What Philly celebrity would you want to have a drink with?',
+    difficulty: 'Easy',
+    timestamps: '2019-04-30 19:47:24',
+    round_id: 1,
   },
-]
+];
 ```
 
 ## [GET] question by id
@@ -350,16 +350,16 @@ Example:
 ```js
 [
   {
-    "id": 2,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "What Philly celebrity would you want to have a drink with?",
-    "difficulty": "Easy",
-    "timestamps": "2019-04-30 19:47:24",
-    "round_id": 1
-  }
-]
+    id: 2,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: 'What Philly celebrity would you want to have a drink with?',
+    difficulty: 'Easy',
+    timestamps: '2019-04-30 19:47:24',
+    round_id: 1,
+  },
+];
 ```
 
 ## [POST] new question
@@ -461,14 +461,14 @@ Example:
 ```js
 [
   {
-    "name": "General Knowledge",
-    "category_id": 9
+    name: 'General Knowledge',
+    category_id: 9,
   },
   {
-    "name": "Celebrities",
-    "category_id": 26
-  }
-]
+    name: 'Celebrities',
+    category_id: 26,
+  },
+];
 ```
 
 # Resource: Answers
@@ -566,7 +566,7 @@ Example:
 
 ## Create Customer with Stripe
 
-## [POST] to `/api/billing//customer` with object similair to the one below. Does not have to be exact (stripe will create a new customer even if an empty object is sent). Other parameters include "description", "source", "metadata", etc. (https://stripe.com/docs/api/customers/create)
+## [POST] to `/api/billing/customer` with object similair to the one below. Does not have to be exact (stripe will create a new customer even if an empty object is sent). Other parameters include "description", "source", "metadata", etc. (https://stripe.com/docs/api/customers/create)
 
 ```js
 {
@@ -657,15 +657,13 @@ Example:
 
 ## Subscribe Customer to one of the two paid payment plans (silver or gold)
 
-## [POST] to `/api/billing//subscribe` with object that includes customer (id in response above), and plan id:
+## [POST] to `/api/billing/subscribe` with object that includes customer (id in response above), and plan id:
 
 ```js
-{
   {
 	"customer": "cus_EyxwhgzEAyOluE",
 	"plan": "plan_Eyw9DUPvzcFMvK"  //gold plan id
-}
-}
+  }
 ```
 
 **Returns**

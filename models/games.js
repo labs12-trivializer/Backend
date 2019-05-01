@@ -10,10 +10,68 @@ module.exports = {
   validate,
   remove,
   findByIdAndUserId,
+  findByIdAndUserIdNormalized
 };
 
 function find() {
   return db('games');
+}
+
+async function findByIdAndUserIdNormalized(id, user_id) {
+  const game = await db('games')
+    .where({ id })
+    .where({ user_id })
+    .first();
+
+  if (!game) {
+    return null;
+  }
+  const entities = {};
+
+  const result = game.id;
+
+  const rounds = await db('rounds').where({ game_id: game.id });
+
+  game.rounds = rounds.map(r => r.id);
+
+  entities.games = { [game.id]: game };
+
+  const questions = await db('questions').whereIn(
+    'round_id',
+    rounds.map(r => r.id)
+  );
+
+  const answers = await db('answers').whereIn(
+    'question_id',
+    questions.map(q => q.id)
+  );
+
+  entities.answers = answers.reduce((accu, cur) => {
+    accu[cur.id] = cur;
+    return accu;
+  }, {});
+
+  const answeredQuestions = questions.reduce((accu, cur) => {
+    cur.answers = answers
+      .filter(a => cur.id === a.question_id)
+      .map(a => a.id);
+
+    accu[cur.id] = cur;
+    return accu;
+  }, {});
+
+  entities.rounds = rounds.reduce((accu, cur) => {
+    cur.questions = questions.filter(q => q.round_id === cur.id).map(q => q.id);
+    accu[cur.id] = cur;
+    return accu;
+  }, {});
+
+  entities.questions = answeredQuestions;
+
+  return {
+    entities,
+    result
+  };
 }
 
 async function findByIdAndUserId(id, user_id) {
