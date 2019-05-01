@@ -14,7 +14,7 @@ exports.seed = function(knex) {
       round_limit: 4,
       question_limit: 30,
       stripe_product_id: 'loremipsum',
-      stripe_plan_id: 'loremipsum',
+      stripe_plan_id: 'plan_Eyw8BcuV5qyAV2',
     },
     {
       name: 'gold',
@@ -22,7 +22,7 @@ exports.seed = function(knex) {
       round_limit: 10,
       question_limit: 200,
       stripe_product_id: 'loremipsum',
-      stripe_plan_id: 'loremipsum',
+      stripe_plan_id: 'plan_Eyw9DUPvzcFMvK',
     },
   ]);
 };
