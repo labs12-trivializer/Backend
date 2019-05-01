@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+const validate = require('../middleware/validate');
 const Users = require('../models/users');
 
 // user profile route
@@ -16,18 +16,12 @@ router.get('/my_profile', async (req, res) => {
 });
 
 // update user profile
-router.put('/my_profile', async(req, res) => {
+router.put('/my_profile', validate(Users.schema), async(req, res) => {
   const currentUserId = req.user.sub;
 
   const { body: user } = req;
 
   user.auth0_id = currentUserId;
-
-
-  const validationResult = Users.validate(req.body);
-  if (validationResult.error) {
-    return res.status(422).json(validationResult);
-  }
 
   const updatedUser = await Users.update(currentUserId, user);
   return res.status(200).json(updatedUser);
@@ -58,17 +52,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // this post request should come in on all successful auth0 signins
-router.post('/', async (req, res) => {
+router.post('/', validate(Users.schema, true), async (req, res) => {
   const { body: user } = req;
 
   // this gets attached via the jwtCheck middleware from line 18 (used on all user routes)
   const currentUserId = req.user.sub;
-
-  // validate input with Joi schema in from users model file.
-  const validationResult = Users.validate(req.body);
-  if (validationResult.error) {
-    return res.status(422).json(validationResult);
-  }
 
   // make sure the currentUserId matches the auth0_id being posted
   // should prevent users from creating other users

@@ -5,7 +5,7 @@ module.exports = {
   get,
   getById,
   insert,
-  validate,
+  schema,
   find,
   getByAuth0Id,
   update,
@@ -57,19 +57,24 @@ async function update(auth0_id, changes) {
     .then(() => getByAuth0Id(auth0_id));
 }
 
-function validate(user) {
-  // joi schema
-  const schema = Joi.object().keys({
+function schema(user, post) {
+  let schema = {
     email: Joi.string()
       .email()
-      .max(255)
-      .required(),
+      .max(255),
     tier_id: Joi.number().integer(),
     logo_url: Joi.string().uri(),
     auth0_id: Joi.string().required(),
     avatar_url: Joi.string().uri(),
-  });
+  }
+
+  // joi schema
+  if (post) schema = Object.assign(schema, {
+    email: Joi.string()
+      .email()
+      .max(255)
+      .required()
+  })
 
   return Joi.validate(user, schema);
 }
-
