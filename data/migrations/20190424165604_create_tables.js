@@ -45,8 +45,8 @@ exports.up = function(knex) {
           .nullable()
           .onDelete('CASCADE')
           .onUpdate('CASCADE');
-        tbl.string('name', 128);
-        tbl.timestamps(true,true);
+        tbl.string('name', 128).notNullable();
+        tbl.integer('category_id').unsigned().notNullable();
       })
       //Games Table
       .createTable('games', tbl => {
