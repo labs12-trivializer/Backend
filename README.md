@@ -428,7 +428,7 @@ Example:
 
 **Restricted:** User must be logged in.
 
-**Returns:** a success message.
+**Returns:** The deleted question object and a success message.
 
 ```js
 {
