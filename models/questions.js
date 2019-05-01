@@ -6,7 +6,8 @@ module.exports = {
   getById,
   update,
   insert,
-  deleteQuestion
+  deleteQuestion,
+  findByUserId
 };
 
 function find() {
