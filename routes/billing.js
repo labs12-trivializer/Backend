@@ -1,6 +1,7 @@
 const router = require('express').Router();
 // Set your secret key: remember to change this to your live secret key in production
-const stripe = require('stripe')('sk_test_cS7yuzpdJwlTlCKwiBK6hGc800OsqD7XvA');
+const key = process.env.SECRET_STRIPE_KEY;
+const stripe = require('stripe')(key);
 
 router.post('/customer', (req, res) => {
   //customer object from frontend

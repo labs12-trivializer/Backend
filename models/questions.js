@@ -19,9 +19,9 @@ async function get() {
 }
 
 async function getById(id) {
-  return await find()
+  const question = await find()
     .where({ id })
-    .first();
+  return question;
 }
 
 async function update(id, changes) {
