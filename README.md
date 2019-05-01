@@ -302,6 +302,31 @@ Example:
 
 # Resource: Questions
 
+# Resource: Categories
+
+## [GET] categories
+
+**URL:** `/api/categories`
+
+**Restricted:** User must be logged in.
+
+**Returns:** an array of category objects.
+
+Example:
+
+```js
+[
+  {
+    "name": "General Knowledge",
+    "category_id": 9
+  },
+  {
+    "name": "Celebrities",
+    "category_id": 26
+  }
+]
+```
+
 # Resource: Answers
 
 ## [GET] answer by _question_ id
