@@ -7,7 +7,8 @@ module.exports = {
   update,
   deleteItem,
   find,
-  withUserId
+  withUserId,
+  findByIdNormalized
 };
 
 function find() {
@@ -19,6 +20,51 @@ function withUserId(queryBuilder, user_id) {
     .select('rounds.*')
     .leftJoin('games', 'games.id', '=', 'rounds.game_id')
     .where('games.user_id', user_id);
+}
+
+async function findByIdNormalized(id, user_id) {
+
+  const round = await db('rounds')
+    .modify(withUserId, user_id)
+    .where('rounds.id', id)
+    .first();
+
+  if (!round) {
+    return null;
+  }
+  const entities = {};
+
+  const result = round.id;
+
+  const questions = await db('questions').where({ round_id: round.id });
+
+  round.questions = questions.map(r => r.id);
+
+  entities.rounds = { [round.id]: round };
+
+  const answers = await db('answers').whereIn(
+    'question_id',
+    questions.map(q => q.id)
+  );
+
+  entities.answers = answers.reduce((accu, cur) => {
+    accu[cur.id] = cur;
+    return accu;
+  }, {});
+
+  const answeredQuestions = questions.reduce((accu, cur) => {
+    cur.answers = answers.filter(a => cur.id === a.question_id).map(a => a.id);
+
+    accu[cur.id] = cur;
+    return accu;
+  }, {});
+
+  entities.questions = answeredQuestions;
+
+  return {
+    entities,
+    result
+  };
 }
 
 async function get() {
