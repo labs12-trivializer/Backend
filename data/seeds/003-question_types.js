@@ -1,8 +1,7 @@
 exports.seed = async function(knex) {
   const setTypes = [
-    'true/false',
-    'multiple choice',
-    'fill-in the blank'
+    'boolean',
+    'multiple choice'
   ];
 
   const questionTypes = setTypes.map(t => ({
