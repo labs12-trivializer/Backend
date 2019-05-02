@@ -29,7 +29,7 @@ exports.seed = async function(knex) {
 
   // Add test accounts
   users.push({
-    email: 'test@test.com',
+    email: 'lambda.trivializer@gmail.com',
     auth0_id: knownUserIds[0],
     tier_id: randomItem(dbTiers).id
   });
