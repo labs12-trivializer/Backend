@@ -63,8 +63,8 @@ function schema(user, post) {
       .email()
       .max(255),
     tier_id: Joi.number().integer(),
-    logo_url: Joi.string().uri(),
-    avatar_url: Joi.string().uri(),
+    logo_id: Joi.string(),
+    avatar_id: Joi.string()
   }
 
   // joi schema
