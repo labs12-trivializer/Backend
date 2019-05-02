@@ -7,11 +7,52 @@ module.exports = {
   update,
   insert,
   deleteQuestion,
-  findByUserId
+  findByUserId,
+  findByIdNormalized,
+  withUserId
 };
 
 function find() {
   return db('questions');
+}
+
+function withUserId(queryBuilder, user_id) {
+  return queryBuilder
+    .select('questions.*')
+    .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
+    .leftJoin('games', 'games.id', '=', 'rounds.game_id')
+    .where('games.user_id', user_id);
+}
+
+async function findByIdNormalized(id, user_id) {
+
+  const question = await db('questions')
+    .modify(withUserId, user_id)
+    .where('questions.id', id)
+    .first();
+
+  if (!question) {
+    return null;
+  }
+  const entities = {};
+
+  const result = question.id;
+
+  const answers = await db('answers').where({ question_id: question.id });
+
+  question.answers = answers.map(a => a.id);
+
+  entities.answers = answers.reduce((accu, cur) => {
+    accu[cur.id] = cur;
+    return accu;
+  }, {});
+
+  entities.questions = { [question.id]: question };
+
+  return {
+    entities,
+    result
+  };
 }
 
 async function findByUserId(user_id) {

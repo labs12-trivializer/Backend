@@ -28,6 +28,39 @@ router.get('/', async (req, res) => {
   return res.status(200).json(questions);
 });
 
+// get all user questions normalized
+router.get('/normalized', async (req, res) => {
+  const user_id = req.user.dbInfo.id;
+  const questions = await Questions.find().modify(
+    Questions.withUserId,
+    user_id
+  );
+
+  const normalized = {
+    result: questions.map(q => q.id),
+    entities: {
+      questions: questions.reduce((accu, cur) => {
+        accu[cur.id] = cur;
+        return accu;
+      }, {})
+    }
+  };
+
+  return res.status(200).json(normalized);
+});
+
+// GET --> /api/questions/:id
+router.get('/normalized/:id', async (req, res) => {
+  const { id } = req.params;
+  const user_id = req.user.dbInfo.id;
+  const result = await Questions.findByIdNormalized(id, user_id);
+  if (result) {
+    return res.status(200).json(result);
+  } else {
+    return res.status(400).json({ message: 'Error: Question not found.' });
+  }
+});
+
 // GET --> /api/questions/:id
 router.get('/:id', async (req, res) => {
   console.log('REQ PARAMS: ', req.params);
@@ -36,13 +69,12 @@ router.get('/:id', async (req, res) => {
   question.length > 0
     ? res.status(200).json(question)
     : res.status(400).json({ message: 'Error: Question not found.' });
-})
-
+});
 
 // PUT --> /api/questions/:id
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const changes = req.body
+  const changes = req.body;
   const updated = await Questions.update(id, changes);
   updated
     ? res.status(200).json(updated)
@@ -53,7 +85,7 @@ router.put('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const newQuestion = req.body;
   const inserted = await Questions.insert(newQuestion);
-  inserted 
+  inserted
     ? res.status(200).json(inserted)
     : res.status(500).json({ message: 'Error: Could not add question' });
 });
@@ -67,10 +99,11 @@ router.delete('/:id', async (req, res) => {
   await Questions.deleteQuestion(id);
   return deleted
     ? res.status(200).json({
-      deleted,
-      message: 'Question deleted'
-    })
+        deleted,
+        message: 'Question deleted'
+      })
     : res.status(404).json({ message: 'Error: Question not found' });
 });
 
 module.exports = router;
+
