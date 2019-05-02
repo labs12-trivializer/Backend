@@ -26,7 +26,7 @@ module.exports = server => {
   server.use('/api/rounds', restricted, lookupUser, rounds);
   server.use('/api/questions', restricted, lookupUser, questions);
   // server.use('/api/answers', answers);
-  server.use('/api/billing', restricted, billing);
+  server.use('/api/billing', restricted, lookupUser, billing);
   server.use('/api/answers', restricted, answers);
   server.use('/api/question_types', restricted, questionTypes);
   server.use('/api/categories', restricted, categories);
