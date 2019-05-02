@@ -18,18 +18,18 @@ exports.seed = async function(knex) {
   const dbTiers = await knex('tiers');
 
   const users = [];
-  for (let i = 0; i < 500; i++) {
-    users.push({
-      email: faker.internet.email(),
-      avatar_url: faker.image.avatar(),
-      logo_url: faker.image.abstract(),
-      tier_id: randomItem(dbTiers).id
-    });
-  }
+  // for (let i = 0; i < 500; i++) {
+  //   users.push({
+  //     email: faker.internet.email(),
+  //     avatar_url: faker.image.avatar(),
+  //     logo_url: faker.image.abstract(),
+  //     tier_id: randomItem(dbTiers).id
+  //   });
+  // }
 
   // Add test accounts
   users.push({
-    email: 'test@test.com',
+    email: 'lambda.trivializer@gmail.com',
     auth0_id: knownUserIds[0],
     tier_id: randomItem(dbTiers).id
   });
