@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// get all user games
+// get all user rounds, normalized
 router.get('/normalized', async (req, res) => {
   const user_id = req.user.dbInfo.id;
   const rounds = await Rounds.find().modify(Rounds.withUserId, user_id);
