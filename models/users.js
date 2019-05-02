@@ -64,7 +64,6 @@ function schema(user, post) {
       .max(255),
     tier_id: Joi.number().integer(),
     logo_url: Joi.string().uri(),
-    auth0_id: Joi.string().required(),
     avatar_url: Joi.string().uri(),
   }
 
