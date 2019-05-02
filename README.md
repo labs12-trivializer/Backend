@@ -308,33 +308,35 @@ Example:
 
 **Restricted:** User must be logged in.
 
-**Returns:** an array of question objects.
+**Returns:** an array of question objects that correspond with the `user_id`.
 
 Example:
 
 ```js
 [
   {
-    "id": 1,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "A walrus makes what sound?",
-    "difficulty": "Easy",
-    "timestamps": "2019-04-30 19:47:24",
-    "round_id": 1
+    id: 1,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: 'A walrus makes what sound?',
+    difficulty: 'Easy',
+    timestamps: '2019-04-30 19:47:24',
+    round_id: 1,
+    user_id: 502
   },
   {
-    "id": 2,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "What Philly celebrity would you want to have a drink with?",
-    "difficulty": "Easy",
-    "timestamps": "2019-04-30 19:47:24",
-    "round_id": 1
+    id: 2,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: 'What Philly celebrity would you want to have a drink with?',
+    difficulty: 'Easy',
+    timestamps: '2019-04-30 19:47:24',
+    round_id: 1,
+    user_id: 502
   },
-]
+];
 ```
 
 ## [GET] question by id
@@ -350,16 +352,17 @@ Example:
 ```js
 [
   {
-    "id": 2,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "What Philly celebrity would you want to have a drink with?",
-    "difficulty": "Easy",
-    "timestamps": "2019-04-30 19:47:24",
-    "round_id": 1
-  }
-]
+    id: 2,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: 'What Philly celebrity would you want to have a drink with?',
+    difficulty: 'Easy',
+    timestamps: '2019-04-30 19:47:24',
+    round_id: 1,
+    user_id: 502
+  },
+];
 ```
 
 ## [POST] new question
@@ -372,13 +375,14 @@ Example:
 
 ```js
 {
-  "user_id": 1, // integer
-  "question_type_id": 1, // integer
-  "category_id": 2, // integer
-  "text": "What color pill does Neo take from Morpheus?", // string, max 128 chars, required
-  "difficulty": "Medium", // string, max 128 chars
-  "timestamps": "2019-04-30 21:35:22", // timestamp, optional
-  "round_id": 2 // integer
+  user_id: 1, // integer
+  question_type_id: 1, // integer
+  category_id: 2, // integer
+  text: "What color pill does Neo take from Morpheus?", // string, max 128 chars, required
+  difficulty: "Medium", // string, max 128 chars
+  timestamps: "2019-04-30 21:35:22", // timestamp, optional
+  round_id: 2, // integer
+  user_id: 502 // integer
 }
 ```
 
@@ -388,14 +392,15 @@ Example:
 
 ```js
 {
-  "id": 7,
-  "user_id": 1,
-  "question_type_id": 1,
-  "category_id": 2,
-  "text": "What color pill does Neo take from Morpheus?",
-  "difficulty": "Medium",
-  "timestamps": "2019-04-30 21:35:22",
-  "round_id": 2
+  id: 7,
+  user_id: 1,
+  question_type_id: 1,
+  category_id: 2,
+  text: "What color pill does Neo take from Morpheus?",
+  difficulty: "Medium",
+  timestamps: "2019-04-30 21:35:22",
+  round_id: 2,
+  user_id: 502
 }
 ```
 
@@ -409,14 +414,15 @@ Example:
 
 ```js
 {
-  "id": 7,
-  "user_id": 1,
-  "question_type_id": 1,
-  "category_id": 2,
-  "text": "Who does Neo take a colored pill from?",
-  "difficulty": "Medium",
-  "timestamps": "2019-04-30 21:35:22",
-  "round_id": 2
+  id: 7,
+  user_id: 1,
+  question_type_id: 1,
+  category_id: 2,
+  text: "Who does Neo take a colored pill from?",
+  difficulty: "Medium",
+  timestamps: "2019-04-30 21:35:22",
+  round_id: 2,
+  user_id: 502
 }
 ```
 
@@ -428,21 +434,22 @@ Example:
 
 **Restricted:** User must be logged in.
 
-**Returns:** a success message.
+**Returns:** The deleted question object and a success message.
 
 ```js
 {
-  "deleted": {
-    "id": 10,
-    "user_id": 1,
-    "question_type_id": 1,
-    "category_id": 1,
-    "text": "An example question should ask what?",
-    "difficulty": "Medium",
-    "timestamps": "2019-04-30 21:35:22",
-    "round_id": 2
+  deleted: {
+    id: 10,
+    user_id: 1,
+    question_type_id: 1,
+    category_id: 1,
+    text: "An example question should ask what?",
+    difficulty: "Medium",
+    timestamps: "2019-04-30 21:35:22",
+    round_id: 2,
+    user_id: 502
   },
-  "message": "Question deleted"
+  message: "Question deleted"
 }
 ```
 
@@ -461,14 +468,14 @@ Example:
 ```js
 [
   {
-    "name": "General Knowledge",
-    "category_id": 9
+    name: 'General Knowledge',
+    category_id: 9,
   },
   {
-    "name": "Celebrities",
-    "category_id": 26
-  }
-]
+    name: 'Celebrities',
+    category_id: 26,
+  },
+];
 ```
 
 # Resource: Answers
@@ -566,7 +573,7 @@ Example:
 
 ## Create Customer with Stripe
 
-## [POST] to `/api/billing//customer` with object similair to the one below. Does not have to be exact (stripe will create a new customer even if an empty object is sent). Other parameters include "description", "source", "metadata", etc. (https://stripe.com/docs/api/customers/create)
+## [POST] to `/api/billing/customer` with object similair to the one below. Does not have to be exact (stripe will create a new customer even if an empty object is sent). Other parameters include "description", "source", "metadata", etc. (https://stripe.com/docs/api/customers/create)
 
 ```js
 {
@@ -657,15 +664,13 @@ Example:
 
 ## Subscribe Customer to one of the two paid payment plans (silver or gold)
 
-## [POST] to `/api/billing//subscribe` with object that includes customer (id in response above), and plan id:
+## [POST] to `/api/billing/subscribe` with object that includes customer (id in response above), and plan id:
 
 ```js
-{
   {
 	"customer": "cus_EyxwhgzEAyOluE",
 	"plan": "plan_Eyw9DUPvzcFMvK"  //gold plan id
-}
-}
+  }
 ```
 
 **Returns**

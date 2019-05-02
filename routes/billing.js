@@ -2,17 +2,19 @@ const router = require('express').Router();
 // Set your secret key: remember to change this to your live secret key in production
 const key = process.env.SECRET_STRIPE_KEY;
 const stripe = require('stripe')(key);
+const Billing = require('../models/billing');
 
+//creating Customer associated with our Stripe account:
 router.post('/customer', (req, res) => {
   //customer object from frontend
-  const { name, email, description } = req.body;
+  const { name, email, description, source } = req.body;
   //create customer with details sent from frontend
   stripe.customers.create(
     {
       name,
       email,
       description,
-      source: 'tok_amex', //amex token hardcoded while testing
+      source,
     },
     function(err, customer) {
       // asynchronously called
@@ -39,6 +41,9 @@ router.post('/subscribe', (req, res) => {
       if (err) {
         res.status(402).json(err);
       } else {
+        //if successfully subscribed, save stripe customer id to our db on 'users' table
+        // Billing.saveStripeId(this.props.id, customer);
+
         res.status(200).json(subscription);
       }
     }
