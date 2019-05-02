@@ -29,6 +29,7 @@ router.post('/customer', (req, res) => {
 
 //create subscription
 router.post('/subscribe', (req, res) => {
+  const dbId = req.user.dbInfo.id;
   const { customer, plan } = req.body;
 
   stripe.subscriptions.create(
@@ -42,8 +43,13 @@ router.post('/subscribe', (req, res) => {
         res.status(402).json(err);
       } else {
         //if successfully subscribed, save stripe customer id to our db on 'users' table
-        // Billing.saveStripeId(this.props.id, customer);
-
+        Billing.saveStripeId(dbId, customer);
+        if (plan === 'plan_Eyw9DUPvzcFMvK') {
+          //update tier_id based on plan subscribed to
+          Billing.updateTier(dbId, 3);
+        } else {
+          Billing.updateTier(dbId, 2); //update tier_id to silver
+        }
         res.status(200).json(subscription);
       }
     }
