@@ -17,8 +17,8 @@ function find() {
     .select(
       'tiers.name as tier_name',
       'users.email',
-      'users.logo_url',
-      'users.avatar_url',
+      'users.logo_id',
+      'users.avatar_id',
       'users.id',
       'users.tier_id',
       'users.auth0_id'
