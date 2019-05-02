@@ -27,7 +27,7 @@ module.exports = server => {
   server.use('/api/questions', restricted, lookupUser, questions);
   // server.use('/api/answers', answers);
   server.use('/api/billing', billing);
-  server.use('/api/answers', restricted, answers);
+  server.use('/api/answers', restricted, lookupUser, answers);
   server.use('/api/question_types', restricted, questionTypes);
   server.use('/api/categories', restricted, categories);
   server.use('/api/tiers', restricted, tiers);
