@@ -60,7 +60,7 @@ router.post('/', validate(Users.schema, true), async (req, res) => {
 
   // if the user existed, return that
   const foundUser = await Users.find()
-    .where({ auth0_id: currentUserId })
+    .where({ email: user.email })
     .first();
 
   if (foundUser) {
