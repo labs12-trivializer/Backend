@@ -58,24 +58,17 @@ router.post('/', validate(Users.schema, true), async (req, res) => {
   // this gets attached via the jwtCheck middleware from line 18 (used on all user routes)
   const currentUserId = req.user.sub;
 
-  // make sure the currentUserId matches the auth0_id being posted
-  // should prevent users from creating other users
-  if (currentUserId !== user.auth0_id) {
-    return res.status(422).json({
-      error: {
-        name: 'ValidationError',
-        details: [{ message: "auth0_id does not match token's auth0 id" }]
-      }
-    });
-  }
-
   // if the user existed, return that
   const foundUser = await Users.find()
-    .where({ auth0_id: user.auth0_id })
+    .where({ auth0_id: currentUserId })
     .first();
+
   if (foundUser) {
     return res.status(200).json(foundUser);
   }
+
+  // add new user auth0 id
+  user.auth0_id = currentUserId;
 
   // otherwise make a new one and return it
   const newUser = await Users.insert(user);
