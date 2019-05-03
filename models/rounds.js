@@ -8,11 +8,22 @@ module.exports = {
   deleteItem,
   find,
   withUserId,
+  findWithCounts,
   findByIdNormalized
 };
 
 function find() {
   return db('rounds');
+}
+
+function findWithCounts() {
+  return (
+    find()
+      .select('rounds.*')
+      .count('questions.id AS num_questions')
+      .leftJoin('questions', 'questions.round_id', '=', 'rounds.id')
+      .groupBy('rounds.id')
+  );
 }
 
 function withUserId(queryBuilder, user_id) {
