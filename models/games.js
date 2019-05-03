@@ -160,7 +160,7 @@ function validate(user) {
   const schema = Joi.object().keys({
     name: Joi.string(),
     last_played: Joi.date().timestamp(),
-    logo_url: Joi.string().uri()
+    logo_id: Joi.string()
   });
 
   return Joi.validate(user, schema);
