@@ -17,8 +17,8 @@ function find() {
     .select(
       'tiers.name as tier_name',
       'users.email',
-      'users.logo_url',
-      'users.avatar_url',
+      'users.logo_id',
+      'users.avatar_id',
       'users.id',
       'users.tier_id',
       'users.auth0_id'
@@ -63,8 +63,8 @@ function schema(user, post) {
       .email()
       .max(255),
     tier_id: Joi.number().integer(),
-    logo_url: Joi.string().uri(),
-    avatar_url: Joi.string().uri(),
+    logo_id: Joi.string(),
+    avatar_id: Joi.string()
   }
 
   // joi schema

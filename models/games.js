@@ -9,12 +9,28 @@ module.exports = {
   update,
   validate,
   remove,
+  findWithCounts,
   findByIdAndUserId,
   findByIdAndUserIdNormalized
 };
 
 function find() {
   return db('games');
+}
+
+function findWithCounts() {
+  const subquery = db('questions')
+    .count('*')
+    .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
+    .where('games.id', db.raw('??', ['rounds.game_id']))
+    .as('num_questions');
+  return (
+    find()
+      .select('games.*', subquery)
+      .count('rounds.id AS num_rounds')
+      .leftJoin('rounds', 'rounds.game_id', '=', 'games.id')
+      .groupBy('games.id')
+  );
 }
 
 async function findByIdAndUserIdNormalized(id, user_id) {
@@ -52,9 +68,7 @@ async function findByIdAndUserIdNormalized(id, user_id) {
   }, {});
 
   const answeredQuestions = questions.reduce((accu, cur) => {
-    cur.answers = answers
-      .filter(a => cur.id === a.question_id)
-      .map(a => a.id);
+    cur.answers = answers.filter(a => cur.id === a.question_id).map(a => a.id);
 
     accu[cur.id] = cur;
     return accu;
@@ -98,17 +112,17 @@ async function findByIdAndUserId(id, user_id) {
 
   const answeredQuestions = questions.map(q => ({
     ...q,
-    answers: answers.filter(a => q.id === a.question_id),
+    answers: answers.filter(a => q.id === a.question_id)
   }));
 
   const questionedRounds = rounds.map(r => ({
     ...r,
-    questions: answeredQuestions.filter(q => r.id === q.round_id),
+    questions: answeredQuestions.filter(q => r.id === q.round_id)
   }));
 
   return {
     ...game,
-    rounds: questionedRounds,
+    rounds: questionedRounds
   };
 }
 
@@ -146,7 +160,7 @@ function validate(user) {
   const schema = Joi.object().keys({
     name: Joi.string(),
     last_played: Joi.date().timestamp(),
-    logo_url: Joi.string().uri(),
+    logo_id: Joi.string()
   });
 
   return Joi.validate(user, schema);

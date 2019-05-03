@@ -24,6 +24,41 @@ router.post(
   }
 );
 
+// R - Retrieve (by question id) (normalized)
+router.get(
+  '/normalized/:id',
+  async (
+    {
+      params: { id },
+      user: {
+        dbInfo: { id: user_id }
+      }
+    },
+    res
+  ) => {
+    const answers = await Answers.filter({ question_id: id }).modify(
+      Answers.withUserId,
+      user_id
+    );
+
+    const normalized = {
+      result: answers.map(a => a.id),
+      entities: {
+        answers: answers.reduce((accu, cur) => {
+          accu[cur.id] = cur;
+          return accu;
+        }, {})
+      }
+    };
+
+    normalized.result.length
+      ? res.status(200).json(normalized)
+      : res
+          .status(404)
+          .json({ message: 'There are no answers for that question.' });
+  }
+);
+
 // R - Retrieve (by question id)
 router.get('/:id', async ({ params: { id } }, res) => {
   const answers = await Answers.filter({ question_id: id });

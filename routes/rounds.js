@@ -14,6 +14,46 @@ router.get('/', async (req, res) => {
   }
 });
 
+// get all user rounds, normalized
+router.get('/normalized', async (req, res) => {
+  const user_id = req.user.dbInfo.id;
+  const rounds = await Rounds.find().modify(Rounds.withUserId, user_id);
+
+  const normalized = {
+    result: rounds.map(r => r.id),
+    entities: {
+      rounds: rounds.reduce((accu, cur) => {
+        accu[cur.id] = cur;
+        return accu;
+      }, {})
+    }
+  };
+
+  return res.status(200).json(normalized);
+});
+
+//get round by id ('/api/rounds/:id')
+router.get('/normalized/:id', async (req, res) => {
+  const userId = req.user.dbInfo.id;
+  const { id } = req.params;
+  const result = await Rounds.findByIdNormalized(id, userId);
+
+  if (!result) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No round with that id found for this user' }]
+      }
+    });
+  }
+
+  if (result) {
+    res.status(200).json(result);
+  } else {
+    res.status(500).json({ error: 'error in retrieving round' });
+  }
+});
+
 //get round by id ('/api/rounds/:id')
 router.get('/:id', async (req, res) => {
   const userId = req.user.dbInfo.id;

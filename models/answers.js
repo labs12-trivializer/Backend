@@ -32,7 +32,7 @@ module.exports = {
         .positive()
         .required(),
       text: Joi.string().max(128),
-      is_correct: Joi.boolean(),
+      is_correct: Joi.boolean()
     };
 
     if (post) {
@@ -40,11 +40,18 @@ module.exports = {
         text: Joi.string()
           .max(128)
           .required(),
-        is_correct: Joi.boolean().required(),
+        is_correct: Joi.boolean().required()
       });
     }
 
     return Joi.validate(answer, schema);
   },
-};
 
+  withUserId: (queryBuilder, user_id) =>
+    queryBuilder
+      .select('answers.*')
+      .leftJoin('questions', 'questions.id', '=', 'answers.question_id')
+      .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
+      .leftJoin('games', 'games.id', '=', 'rounds.game_id')
+      .where('games.user_id', user_id),
+};

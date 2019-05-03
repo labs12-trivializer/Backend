@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 // get all user games
 router.get('/normalized', async (req, res) => {
   const user_id = req.user.dbInfo.id;
-  const games = await Games.find().where({ user_id });
+  const games = await Games.findWithCounts().where('games.user_id', user_id);
 
   const normalized = {
     result: games.map(g => g.id),
