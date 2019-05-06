@@ -24,13 +24,11 @@ function findWithCounts() {
     .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
     .where('games.id', db.raw('??', ['rounds.game_id']))
     .as('num_questions');
-  return (
-    find()
-      .select('games.*', subquery)
-      .count('rounds.id AS num_rounds')
-      .leftJoin('rounds', 'rounds.game_id', '=', 'games.id')
-      .groupBy('games.id')
-  );
+  return find()
+    .select('games.*', subquery)
+    .count('rounds.id AS num_rounds')
+    .leftJoin('rounds', 'rounds.game_id', '=', 'games.id')
+    .groupBy('games.id');
 }
 
 async function findByIdAndUserIdNormalized(id, user_id) {
@@ -52,10 +50,15 @@ async function findByIdAndUserIdNormalized(id, user_id) {
 
   entities.games = { [game.id]: game };
 
-  const questions = await db('questions').whereIn(
-    'round_id',
-    rounds.map(r => r.id)
-  );
+  const questions = await db('questions')
+    .select('questions.*', 'question_types.name as question_type')
+    .leftJoin(
+      'question_types',
+      'questions.question_type_id',
+      '=',
+      'question_types.id'
+    )
+    .whereIn('round_id', rounds.map(r => r.id));
 
   const answers = await db('answers').whereIn(
     'question_id',

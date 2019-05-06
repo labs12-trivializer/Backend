@@ -17,13 +17,11 @@ function find() {
 }
 
 function findWithCounts() {
-  return (
-    find()
-      .select('rounds.*')
-      .count('questions.id AS num_questions')
-      .leftJoin('questions', 'questions.round_id', '=', 'rounds.id')
-      .groupBy('rounds.id')
-  );
+  return find()
+    .select('rounds.*')
+    .count('questions.id AS num_questions')
+    .leftJoin('questions', 'questions.round_id', '=', 'rounds.id')
+    .groupBy('rounds.id');
 }
 
 function withUserId(queryBuilder, user_id) {
@@ -34,7 +32,6 @@ function withUserId(queryBuilder, user_id) {
 }
 
 async function findByIdNormalized(id, user_id) {
-
   const round = await db('rounds')
     .modify(withUserId, user_id)
     .where('rounds.id', id)
@@ -47,7 +44,15 @@ async function findByIdNormalized(id, user_id) {
 
   const result = round.id;
 
-  const questions = await db('questions').where({ round_id: round.id });
+  const questions = await db('questions')
+    .select('questions.*', 'question_types.name as question_type')
+    .leftJoin(
+      'question_types',
+      'questions.question_type_id',
+      '=',
+      'question_types.id'
+    )
+    .where({ round_id: round.id });
 
   round.questions = questions.map(r => r.id);
 
