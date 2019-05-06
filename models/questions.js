@@ -18,7 +18,8 @@ function find() {
 
 function withUserId(queryBuilder, user_id) {
   return queryBuilder
-    .select('questions.*')
+    .select('questions.*', 'question_types.name as question_type')
+    .leftJoin('question_types', 'questions.question_type_id', '=', 'question_types.id')
     .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
     .leftJoin('games', 'games.id', '=', 'rounds.game_id')
     .where('games.user_id', user_id);
