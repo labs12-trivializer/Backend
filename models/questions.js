@@ -18,15 +18,24 @@ function find() {
 
 function withUserId(queryBuilder, user_id) {
   return queryBuilder
-    .select('questions.*', 'question_types.name as question_type')
-    .leftJoin('question_types', 'questions.question_type_id', '=', 'question_types.id')
+    .select(
+      'questions.*',
+      'question_types.name as question_type',
+      'categories.name as category'
+    )
+    .leftJoin(
+      'question_types',
+      'questions.question_type_id',
+      '=',
+      'question_types.id'
+    )
+    .leftJoin('categories', 'categories.id', '=', 'questions.category_id')
     .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
     .leftJoin('games', 'games.id', '=', 'rounds.game_id')
     .where('games.user_id', user_id);
 }
 
 async function findByIdNormalized(id, user_id) {
-
   const question = await db('questions')
     .modify(withUserId, user_id)
     .where('questions.id', id)
@@ -57,8 +66,7 @@ async function findByIdNormalized(id, user_id) {
 }
 
 async function findByUserId(user_id) {
-  const questions = await db('questions')
-    .where({ user_id });
+  const questions = await db('questions').where({ user_id });
 
   if (!questions) {
     return null;
@@ -81,8 +89,7 @@ async function get() {
 }
 
 async function getById(id) {
-  const question = await find()
-    .where({ id })
+  const question = await find().where({ id });
   return question;
 }
 
