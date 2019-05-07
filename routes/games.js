@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const diff = require('deep-diff').diff;
 
 const Games = require('../models/games');
 
@@ -108,6 +109,16 @@ router.post('/', async (req, res) => {
   newGame.user_id = req.user.dbInfo.id;
 
   const createdGame = await Games.insert(newGame);
+  return res.status(200).json(createdGame);
+});
+
+// post nested
+router.post('/nested', async (req, res) => {
+  const { body: newGame } = req;
+  newGame.user_id = req.user.dbInfo.id;
+  const newGameId = await Games.nestedInsert(newGame);
+  const createdGame = await Games.findByIdAndUserId(newGameId, newGame.user_id);
+
   return res.status(200).json(createdGame);
 });
 

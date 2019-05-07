@@ -3,12 +3,13 @@ const Joi = require('@hapi/joi');
 
 module.exports = {
   get,
-  getById,
-  insert,
   find,
-  update,
-  validate,
   remove,
+  insert,
+  update,
+  getById,
+  validate,
+  nestedInsert,
   findWithCounts,
   findByIdAndUserId,
   findByIdAndUserIdNormalized
@@ -172,4 +173,80 @@ function validate(user) {
   });
 
   return Joi.validate(user, schema);
+}
+
+// function to handle creating a new game with all of its
+// related models
+async function nestedInsert({ rounds: newRounds, ...newGame }) {
+  // insert the newGame
+  const createdGame = await insert(newGame);
+
+  if (!newRounds || newRounds.length === 0) {
+    return createdGame.id;
+  }
+
+  const createdRounds = await Promise.all(
+    newRounds.map(({questions: omit, ...r}) =>
+      db('rounds')
+        .insert({ game_id: createdGame.id, ...r }, 'id')
+        .then(ids => db('rounds').where({ id: ids[0] }).first())
+    )
+  );
+
+  // take all the rounds' questions and flatten them into one array
+  // of questions we need to make
+  // also set the round_id from our createdRounds
+  const newQuestions = [].concat.apply(
+    [],
+    newRounds.reduce((accu, r, idx) => {
+      if (r.questions) {
+        return [
+          ...accu,
+          r.questions.map(q => ({ round_id: createdRounds[idx].id, ...q }))
+        ];
+      }
+
+      return accu;
+    }, [])
+  );
+
+  if (newQuestions.length === 0) {
+    return createdGame.id;
+  }
+
+  // batch insert those newQuestions, omit the answers here
+  // const createdQuestions = await db('questions')
+  //   .insert(newQuestions.map(({ answers: omit, ...q }) => q), 'id')
+  //   .then(() =>
+  //     db('questions').whereIn('round_id', createdRounds.map(r => r.id))
+  //   );
+  const createdQuestions = await Promise.all(
+    newQuestions.map(({ answers: omit, ...q }) =>
+      db('questions')
+        .insert(q, 'id')
+        .then(ids => db('questions').where({ id: ids[0] }).first())
+    )
+  );
+
+  // do the same for answers
+  const newAnswers = [].concat.apply(
+    [],
+    newQuestions.reduce((accu, q, idx) => {
+      if (q.answers) {
+        return [
+          ...accu,
+          q.answers.map(a => ({ question_id: createdQuestions[idx].id, ...a }))
+        ];
+      }
+      return accu;
+    }, [])
+  );
+
+  if (newAnswers.length === 0) {
+    return createdGame.id;
+  }
+  const createdAnswers = await db('answers').insert(newAnswers, 'id');
+
+  // return the id of the createdGame
+  return createdGame.id;
 }
