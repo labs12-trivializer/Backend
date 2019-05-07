@@ -45,7 +45,12 @@ async function findByIdNormalized(id, user_id) {
   const result = round.id;
 
   const questions = await db('questions')
-    .select('questions.*', 'question_types.name as question_type')
+    .select(
+      'questions.*',
+      'question_types.name as question_type',
+      'categories.name as category'
+    )
+    .leftJoin('categories', 'categories.id', '=', 'questions.category_id')
     .leftJoin(
       'question_types',
       'questions.question_type_id',

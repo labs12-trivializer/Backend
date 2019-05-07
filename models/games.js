@@ -51,13 +51,18 @@ async function findByIdAndUserIdNormalized(id, user_id) {
   entities.games = { [game.id]: game };
 
   const questions = await db('questions')
-    .select('questions.*', 'question_types.name as question_type')
+    .select(
+      'questions.*',
+      'question_types.name as question_type',
+      'categories.name as category'
+    )
     .leftJoin(
       'question_types',
       'questions.question_type_id',
       '=',
       'question_types.id'
     )
+    .leftJoin('categories', 'categories.id', '=', 'questions.category_id')
     .whereIn('round_id', rounds.map(r => r.id));
 
   const answers = await db('answers').whereIn(
