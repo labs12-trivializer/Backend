@@ -90,6 +90,32 @@ router.post('/', async (req, res) => {
   }
 });
 
+// edit an existing round, including any changes necessary for
+// nested data
+router.put('/nested/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.dbInfo.id;
+  const round = await Rounds.find()
+    .modify(Rounds.withUserId, userId)
+    .where('rounds.id', id)
+    .first();
+
+  if (!round) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No round with that id found for this user' }]
+      }
+    });
+  }
+
+  const nestedRound = req.body;
+  const dbRound = await Rounds.nestedUpdate(id, nestedRound).then(id =>
+    Rounds.findByIdNormalized(id, userId)
+  );
+  res.status(200).json(dbRound);
+});
+
 //edit an existing round ('/api/rounds/:id')
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
