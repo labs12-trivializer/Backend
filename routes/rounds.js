@@ -1,7 +1,10 @@
 const router = require('express').Router();
 
+const validate = require('../middleware/validate');
+
 //Rounds model
 const Rounds = require('../models/rounds');
+const Games = require('../models/games');
 
 //returns all rounds ('/api/rounds')
 router.get('/', async (req, res) => {
@@ -10,7 +13,8 @@ router.get('/', async (req, res) => {
   if (rounds) {
     res.status(200).json(rounds);
   } else {
-    res.status(500).json({ error: 'error in retrieving round' }); }
+    res.status(500).json({ error: 'error in retrieving round' });
+  }
 });
 
 // get all user rounds, normalized
@@ -78,8 +82,36 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// edit an existing round, including any changes necessary for
+// nested data, respond with normalized response
+router.post('/nested', validate(Rounds.schema, true), async (req, res) => {
+  const { body: newRound } = req;
+  const userId = req.user.dbInfo.id;
+
+  const dbGame = await Games.find()
+    .where({
+      user_id: userId,
+      id: newRound.game_id
+    })
+    .first();
+
+  if (!dbGame) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No game with that game_id found for this user' }]
+      }
+    });
+  }
+
+  const createdRound = await Rounds.nestedInsert(newRound).then(id =>
+    Rounds.findByIdNormalized(id, userId)
+  );
+  res.status(200).json(createdRound);
+});
+
 //add a new round ('/api/rounds')
-router.post('/', async (req, res) => {
+router.post('/', validate(Rounds.schema, true), async (req, res) => {
   const roundToAdd = req.body;
   const added = await Rounds.insert(roundToAdd);
   if (added) {
@@ -91,7 +123,7 @@ router.post('/', async (req, res) => {
 
 // edit an existing round, including any changes necessary for
 // nested data, respond with normalized response
-router.put('/nested/:id', async (req, res) => {
+router.put('/nested/:id', validate(Rounds.schema), async (req, res) => {
   const { id } = req.params;
   const userId = req.user.dbInfo.id;
   const round = await Rounds.find()
@@ -116,7 +148,7 @@ router.put('/nested/:id', async (req, res) => {
 });
 
 //edit an existing round ('/api/rounds/:id')
-router.put('/:id', async (req, res) => {
+router.put('/:id', validate(Rounds.schema), async (req, res) => {
   const { id } = req.params;
   const userId = req.user.dbInfo.id;
   const round = await Rounds.find()
