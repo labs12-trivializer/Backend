@@ -1,17 +1,41 @@
 const db = require('../data/db');
+const Joi = require('@hapi/joi');
 
 module.exports = {
   get,
   find,
+  schema,
   insert,
   update,
   getById,
   deleteItem,
   withUserId,
+  nestedInsert,
   nestedUpdate,
   findWithCounts,
   findByIdNormalized
 };
+
+function schema(round, post) {
+  let thisSchema = {
+    game_id: Joi.number()
+      .integer()
+      .positive(),
+    number: Joi.number().integer(),
+    questions: Joi.array()
+  };
+
+  if (post) {
+    thisSchema = {
+      ...thisSchema,
+      game_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+    };
+  }
+  return Joi.validate(round, thisSchema);
+}
 
 function find() {
   return db('rounds');
@@ -129,7 +153,7 @@ async function nestedUpdate(id, nestedRound) {
     .update(roundDetails)
     .then(() => getById(id));
 
-  if(!newQuestions) {
+  if (!newQuestions) {
     return dbRound.id;
   }
 
@@ -171,4 +195,47 @@ async function nestedUpdate(id, nestedRound) {
   await db('answers').insert(newAnswers, 'id');
 
   return dbRound.id;
+}
+
+// insert a new round with optional nested questions and answers
+async function nestedInsert({ questions: newQuestions, ...newRound }) {
+  const createdRound = await insert(newRound);
+
+  if (!newQuestions || newQuestions.length === 0) {
+    return createdRound.id;
+  }
+
+  const createdQuestions = await Promise.all(
+    newQuestions.map(({ answers: omit, ...r }) =>
+      db('questions')
+        .insert({ round_id: createdRound.id, ...r }, 'id')
+        .then(ids =>
+          db('questions')
+            .where({ id: ids[0] })
+            .first()
+        )
+    )
+  );
+
+  // do the same for answers
+  const newAnswers = [].concat.apply(
+    [],
+    newQuestions.reduce((accu, q, idx) => {
+      if (q.answers) {
+        return [
+          ...accu,
+          q.answers.map(a => ({ question_id: createdQuestions[idx].id, ...a }))
+        ];
+      }
+      return accu;
+    }, [])
+  );
+
+  if (newAnswers.length === 0) {
+    return createdRound.id;
+  }
+  await db('answers').insert(newAnswers, 'id');
+
+  // return the id of the createdGame
+  return createdRound.id;
 }
