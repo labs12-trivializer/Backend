@@ -151,8 +151,6 @@ async function nestedUpdate(id, nestedRound) {
     )
   );
 
-  console.log(createdQuestions);
-
   // do the same for answers
   const newAnswers = [].concat.apply(
     [],
