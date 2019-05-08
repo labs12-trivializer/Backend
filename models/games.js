@@ -1,5 +1,5 @@
-const db = require('../data/db');
-const Joi = require('@hapi/joi');
+const db = require("../data/db");
+const Joi = require("@hapi/joi");
 
 module.exports = {
   get,
@@ -17,25 +17,25 @@ module.exports = {
 };
 
 function find() {
-  return db('games');
+  return db("games");
 }
 
 function findWithCounts() {
-  const subquery = db('questions')
-    .count('*')
-    .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
-    .where('games.id', db.raw('??', ['rounds.game_id']))
-    .as('num_questions');
+  const subquery = db("questions")
+    .count("*")
+    .leftJoin("rounds", "rounds.id", "=", "questions.round_id")
+    .where("games.id", db.raw("??", ["rounds.game_id"]))
+    .as("num_questions");
 
   return find()
-    .select('games.*', subquery)
-    .count('rounds.id AS num_rounds')
-    .leftJoin('rounds', 'rounds.game_id', '=', 'games.id')
-    .groupBy('games.id');
+    .select("games.*", subquery)
+    .count("rounds.id AS num_rounds")
+    .leftJoin("rounds", "rounds.game_id", "=", "games.id")
+    .groupBy("games.id");
 }
 
 async function findByIdAndUserIdNormalized(id, user_id) {
-  const game = await db('games')
+  const game = await db("games")
     .where({ id })
     .where({ user_id })
     .first();
@@ -47,29 +47,29 @@ async function findByIdAndUserIdNormalized(id, user_id) {
 
   const result = game.id;
 
-  const rounds = await db('rounds').where({ game_id: game.id });
+  const rounds = await db("rounds").where({ game_id: game.id });
 
   game.rounds = rounds.map(r => r.id);
 
   entities.games = { [game.id]: game };
 
-  const questions = await db('questions')
+  const questions = await db("questions")
     .select(
-      'questions.*',
-      'question_types.name as question_type',
-      'categories.name as category'
+      "questions.*",
+      "question_types.name as question_type",
+      "categories.name as category"
     )
     .leftJoin(
-      'question_types',
-      'questions.question_type_id',
-      '=',
-      'question_types.id'
+      "question_types",
+      "questions.question_type_id",
+      "=",
+      "question_types.id"
     )
-    .leftJoin('categories', 'categories.id', '=', 'questions.category_id')
-    .whereIn('round_id', rounds.map(r => r.id));
+    .leftJoin("categories", "categories.id", "=", "questions.category_id")
+    .whereIn("round_id", rounds.map(r => r.id));
 
-  const answers = await db('answers').whereIn(
-    'question_id',
+  const answers = await db("answers").whereIn(
+    "question_id",
     questions.map(q => q.id)
   );
 
@@ -100,7 +100,7 @@ async function findByIdAndUserIdNormalized(id, user_id) {
 }
 
 async function findByIdAndUserId(id, user_id) {
-  const game = await db('games')
+  const game = await db("games")
     .where({ id })
     .where({ user_id })
     .first();
@@ -109,15 +109,15 @@ async function findByIdAndUserId(id, user_id) {
     return null;
   }
 
-  const rounds = await db('rounds').where({ game_id: game.id });
+  const rounds = await db("rounds").where({ game_id: game.id });
 
-  const questions = await db('questions').whereIn(
-    'round_id',
+  const questions = await db("questions").whereIn(
+    "round_id",
     rounds.map(r => r.id)
   );
 
-  const answers = await db('answers').whereIn(
-    'question_id',
+  const answers = await db("answers").whereIn(
+    "question_id",
     questions.map(q => q.id)
   );
 
@@ -150,19 +150,19 @@ async function getById(id) {
 }
 
 async function insert(game) {
-  return await db('games')
-    .insert(game, 'id')
+  return await db("games")
+    .insert(game, "id")
     .then(ids => getById(ids[0]));
 }
 
 async function update(id, changes) {
-  return await db('games')
+  return await db("games")
     .where({ id })
     .update(changes)
     .then(() => getById(id));
 }
 async function remove(id) {
-  return await db('games')
+  return await db("games")
     .where({ id })
     .del();
 }
@@ -172,6 +172,7 @@ function validate(user) {
     name: Joi.string(),
     last_played: Joi.date().timestamp(),
     logo_id: Joi.string(),
+    date_to_be_played: Joi.string(),
     rounds: Joi.array()
   });
 
@@ -190,10 +191,10 @@ async function nestedInsert({ rounds: newRounds, ...newGame }) {
 
   const createdRounds = await Promise.all(
     newRounds.map(({ questions: omit, ...r }) =>
-      db('rounds')
-        .insert({ game_id: createdGame.id, ...r }, 'id')
+      db("rounds")
+        .insert({ game_id: createdGame.id, ...r }, "id")
         .then(ids =>
-          db('rounds')
+          db("rounds")
             .where({ id: ids[0] })
             .first()
         )
@@ -224,10 +225,10 @@ async function nestedInsert({ rounds: newRounds, ...newGame }) {
   // batch insert those newQuestions, omit the answers here
   const createdQuestions = await Promise.all(
     newQuestions.map(({ answers: omit, ...q }) =>
-      db('questions')
-        .insert(q, 'id')
+      db("questions")
+        .insert(q, "id")
         .then(ids =>
-          db('questions')
+          db("questions")
             .where({ id: ids[0] })
             .first()
         )
@@ -251,7 +252,7 @@ async function nestedInsert({ rounds: newRounds, ...newGame }) {
   if (newAnswers.length === 0) {
     return createdGame.id;
   }
-  await db('answers').insert(newAnswers, 'id');
+  await db("answers").insert(newAnswers, "id");
 
   // return the id of the createdGame
   return createdGame.id;
@@ -261,7 +262,7 @@ async function nestedInsert({ rounds: newRounds, ...newGame }) {
 // and replaces them with new ones
 async function nestedUpdate(id, nestedGame) {
   const { rounds: newRounds, ...gameDetails } = nestedGame;
-  const dbGame = await db('games')
+  const dbGame = await db("games")
     .where({ id })
     .update(gameDetails)
     .then(() => getById(id));
@@ -271,17 +272,17 @@ async function nestedUpdate(id, nestedGame) {
   }
 
   // delete all of this game's rounds
-  await db('rounds')
+  await db("rounds")
     .where({ game_id: dbGame.id })
     .del();
 
   // create new rounds, questions, and answers
   const createdRounds = await Promise.all(
     newRounds.map(({ id: omitId, questions: omit, ...r }) =>
-      db('rounds')
-        .insert({ ...r, game_id: dbGame.id }, 'id')
+      db("rounds")
+        .insert({ ...r, game_id: dbGame.id }, "id")
         .then(ids =>
-          db('rounds')
+          db("rounds")
             .where({ id: ids[0] })
             .first()
         )
@@ -309,10 +310,10 @@ async function nestedUpdate(id, nestedGame) {
   // batch insert those newQuestions, omit the answers here
   const createdQuestions = await Promise.all(
     newQuestions.map(({ answers: omit, ...q }) =>
-      db('questions')
-        .insert(q, 'id')
+      db("questions")
+        .insert(q, "id")
         .then(ids =>
-          db('questions')
+          db("questions")
             .where({ id: ids[0] })
             .first()
         )
@@ -336,7 +337,7 @@ async function nestedUpdate(id, nestedGame) {
   if (newAnswers.length === 0) {
     return dbGame.id;
   }
-  await db('answers').insert(newAnswers, 'id');
+  await db("answers").insert(newAnswers, "id");
 
   // return the id of the updated Game
   return dbGame.id;
