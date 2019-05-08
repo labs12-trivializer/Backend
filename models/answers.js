@@ -25,7 +25,7 @@ module.exports = {
       .where({ id })
       .del(),
 
-  schema: async (answer, post) => {
+  schema: (answer, post) => {
     let schema = {
       question_id: Joi.number()
         .integer()
