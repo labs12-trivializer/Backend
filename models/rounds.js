@@ -2,12 +2,13 @@ const db = require('../data/db');
 
 module.exports = {
   get,
-  insert,
-  getById,
-  update,
-  deleteItem,
   find,
+  insert,
+  update,
+  getById,
+  deleteItem,
   withUserId,
+  nestedUpdate,
   findWithCounts,
   findByIdNormalized
 };
@@ -117,4 +118,57 @@ async function deleteItem(id) {
   return await db('rounds')
     .where({ id })
     .del();
+}
+
+// method that deletes a round's questions and answers (via cascade)
+// and replaces them with new questions and answers
+async function nestedUpdate(id, nestedRound) {
+  const { questions: newQuestions, ...roundDetails } = nestedRound;
+  const dbRound = await db('rounds')
+    .where({ id })
+    .update(roundDetails)
+    .then(() => getById(id));
+
+  if(!newQuestions) {
+    return dbRound.id;
+  }
+
+  // delete all of this rounds questions
+  await db('questions')
+    .where({ round_id: dbRound.id })
+    .del();
+
+  // create new questions and answers
+  const createdQuestions = await Promise.all(
+    newQuestions.map(({ id: omitId, answers: omit, ...q }) =>
+      db('questions')
+        .insert({ ...q, round_id: dbRound.id }, 'id')
+        .then(ids =>
+          db('questions')
+            .where({ id: ids[0] })
+            .first()
+        )
+    )
+  );
+
+  // do the same for answers
+  const newAnswers = [].concat.apply(
+    [],
+    newQuestions.reduce((accu, q, idx) => {
+      if (q.answers) {
+        return [
+          ...accu,
+          q.answers.map(a => ({ question_id: createdQuestions[idx].id, ...a }))
+        ];
+      }
+      return accu;
+    }, [])
+  );
+
+  if (newAnswers.length === 0) {
+    return dbRound.id;
+  }
+  await db('answers').insert(newAnswers, 'id');
+
+  return dbRound.id;
 }

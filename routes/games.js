@@ -111,6 +111,16 @@ router.post('/', async (req, res) => {
   return res.status(200).json(createdGame);
 });
 
+// post nested
+router.post('/nested', async (req, res) => {
+  const { body: newGame } = req;
+  newGame.user_id = req.user.dbInfo.id;
+  const newGameId = await Games.nestedInsert(newGame);
+  const createdGame = await Games.findByIdAndUserId(newGameId, newGame.user_id);
+
+  return res.status(200).json(createdGame);
+});
+
 // destroy game
 router.delete('/:id', async (req, res) => {
   const user_id = req.user.dbInfo.id;
