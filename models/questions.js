@@ -126,8 +126,6 @@ async function nestedUpdate(id, nestedQuestion) {
     return dbQuestion.id;
   }
 
-  console.log(dbQuestion);
-
   // delete all of this questions answers
   await db('answers')
     .where('answers.question_id', dbQuestion.id)
