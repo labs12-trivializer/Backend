@@ -215,11 +215,6 @@ async function nestedInsert({ rounds: newRounds, ...newGame }) {
   }
 
   // batch insert those newQuestions, omit the answers here
-  // const createdQuestions = await db('questions')
-  //   .insert(newQuestions.map(({ answers: omit, ...q }) => q), 'id')
-  //   .then(() =>
-  //     db('questions').whereIn('round_id', createdRounds.map(r => r.id))
-  //   );
   const createdQuestions = await Promise.all(
     newQuestions.map(({ answers: omit, ...q }) =>
       db('questions')
@@ -245,7 +240,7 @@ async function nestedInsert({ rounds: newRounds, ...newGame }) {
   if (newAnswers.length === 0) {
     return createdGame.id;
   }
-  const createdAnswers = await db('answers').insert(newAnswers, 'id');
+  await db('answers').insert(newAnswers, 'id');
 
   // return the id of the createdGame
   return createdGame.id;
