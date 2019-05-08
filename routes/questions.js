@@ -71,6 +71,31 @@ router.get('/:id', async (req, res) => {
     : res.status(400).json({ message: 'Error: Question not found.' });
 });
 
+// PUT --> /api/questions/normalized/:id
+// expects nested data, responds with normalized response
+router.put('/nested/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.dbInfo.id;
+  const question = await Questions.find()
+    .modify(Questions.withUserId, userId)
+    .where('questions.id', id)
+    .first();
+
+  if (!question) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No question with that id found for this user' }]
+      }
+    });
+  }
+  const changes = req.body;
+  const dbQuestion = await Questions.nestedUpdate(id, changes).then(id =>
+    Questions.findByIdNormalized(id, userId)
+  );
+  res.status(200).json(dbQuestion);
+});
+
 // PUT --> /api/questions/:id
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
@@ -106,4 +131,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-

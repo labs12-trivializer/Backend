@@ -10,8 +10,7 @@ router.get('/', async (req, res) => {
   if (rounds) {
     res.status(200).json(rounds);
   } else {
-    res.status(500).json({ error: 'error in retrieving round' });
-  }
+    res.status(500).json({ error: 'error in retrieving round' }); }
 });
 
 // get all user rounds, normalized
@@ -91,7 +90,7 @@ router.post('/', async (req, res) => {
 });
 
 // edit an existing round, including any changes necessary for
-// nested data
+// nested data, respond with normalized response
 router.put('/nested/:id', async (req, res) => {
   const { id } = req.params;
   const userId = req.user.dbInfo.id;

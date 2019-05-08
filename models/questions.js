@@ -9,7 +9,8 @@ module.exports = {
   deleteQuestion,
   findByUserId,
   findByIdNormalized,
-  withUserId
+  withUserId,
+  nestedUpdate
 };
 
 function find() {
@@ -89,7 +90,9 @@ async function get() {
 }
 
 async function getById(id) {
-  const question = await find().where({ id });
+  const question = await find()
+    .where({ id })
+    .first();
   return question;
 }
 
@@ -110,4 +113,37 @@ async function deleteQuestion(id) {
   return await db('questions')
     .where({ id })
     .del();
+}
+
+async function nestedUpdate(id, nestedQuestion) {
+  const { answers: newAnswers, ...questionDetails } = nestedQuestion;
+  const dbQuestion = await db('questions')
+    .where({ id })
+    .update(questionDetails)
+    .then(() => getById(id));
+
+  if (!newAnswers) {
+    return dbQuestion.id;
+  }
+
+  console.log(dbQuestion);
+
+  // delete all of this questions answers
+  await db('answers')
+    .where('answers.question_id', dbQuestion.id)
+    .del();
+
+  await Promise.all(
+    newAnswers.map(({ id: omitId, ...a }) =>
+      db('answers')
+        .insert({ ...a, question_id: dbQuestion.id }, 'id')
+        .then(ids =>
+          db('answers')
+            .where({ id: ids[0] })
+            .first()
+        )
+    )
+  );
+
+  return dbQuestion.id;
 }
