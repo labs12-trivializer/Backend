@@ -16,6 +16,9 @@ function find() {
     .leftJoin('tiers', 'tiers.id', '=', 'users.tier_id')
     .select(
       'tiers.name as tier_name',
+      'tiers.game_limit',
+      'tiers.round_limit',
+      'tiers.question_limit',
       'users.email',
       'users.logo_id',
       'users.avatar_id',
