@@ -34,7 +34,7 @@ function schema(round, post) {
         .required()
     };
   }
-  return Joi.validate(round, thisSchema);
+  return Joi.validate(round, thisSchema, { stripUnknown: true });
 }
 
 function find() {
