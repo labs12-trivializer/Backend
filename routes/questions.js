@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const Questions = require('../models/questions');
+const Rounds = require('../models/rounds');
 
 // GET --> /api/questions
 // router.get('/', async (req, res) => {
@@ -113,6 +114,32 @@ router.post('/', async (req, res) => {
   inserted
     ? res.status(200).json(inserted)
     : res.status(500).json({ message: 'Error: Could not add question' });
+});
+
+// POST --> /api/questions/nested
+router.post('/nested', async (req, res) => {
+  const newQuestion = req.body;
+  const userId = req.user.dbInfo.id;
+  const dbRound = await Rounds.find()
+    .where({ 'rounds.id': newQuestion.round_id })
+    .modify(Rounds.withUserId, userId)
+    .first();
+
+  if (!dbRound) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [
+          { message: 'No round found for this user with that round_id' }
+        ]
+      }
+    });
+  }
+
+  const createdQuestion = await Questions.nestedInsert(newQuestion).then(id =>
+    Questions.findByIdNormalized(id, userId)
+  );
+  res.status(200).json(createdQuestion);
 });
 
 // DELETE --> /api/questions/:id
