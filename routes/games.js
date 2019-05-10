@@ -139,7 +139,7 @@ router.post('/nested', async (req, res) => {
   const { body: newGame } = req;
   newGame.user_id = req.user.dbInfo.id;
   const newGameId = await Games.nestedInsert(newGame);
-  const createdGame = await Games.findByIdAndUserId(newGameId, newGame.user_id);
+  const createdGame = await Games.findByIdAndUserIdNormalized(newGameId, newGame.user_id);
 
   return res.status(200).json(createdGame);
 });
