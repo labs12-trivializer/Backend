@@ -10,7 +10,8 @@ module.exports = {
   findByUserId,
   findByIdNormalized,
   withUserId,
-  nestedUpdate
+  nestedUpdate,
+  nestedInsert
 };
 
 function find() {
@@ -144,4 +145,28 @@ async function nestedUpdate(id, nestedQuestion) {
   );
 
   return dbQuestion.id;
+}
+
+// insert a new question with optional nested answers, return the id of the
+// new question
+async function nestedInsert({ answers: newAnswers, ...newQuestion }) {
+  const createdQuestion = await insert(newQuestion);
+
+  if (!newAnswers || newAnswers.length === 0) {
+    return createdQuestion.id;
+  }
+
+  await Promise.all(
+    newAnswers.map(a =>
+      db('answers')
+        .insert({ question_id: createdQuestion.id, ...a }, 'id')
+        .then(ids =>
+          db('answers')
+            .where({ id: ids[0] })
+            .first()
+        )
+    )
+  );
+
+  return createdQuestion.id;
 }
