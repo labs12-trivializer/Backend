@@ -71,16 +71,7 @@ async function findByIdNormalized(id, user_id) {
 
   const questions = await db('questions')
     .select(
-      'questions.*',
-      'question_types.name as question_type',
-      'categories.name as category'
-    )
-    .leftJoin('categories', 'categories.id', '=', 'questions.category_id')
-    .leftJoin(
-      'question_types',
-      'questions.question_type_id',
-      '=',
-      'question_types.id'
+      'questions.*'
     )
     .where({ round_id: round.id });
 
@@ -182,7 +173,7 @@ async function nestedUpdate(id, nestedRound) {
       if (q.answers) {
         return [
           ...accu,
-          q.answers.map(a => ({ question_id: createdQuestions[idx].id, ...a }))
+          q.answers.map(a => ({ ...a, question_id: createdQuestions[idx].id }))
         ];
       }
       return accu;
@@ -192,6 +183,7 @@ async function nestedUpdate(id, nestedRound) {
   if (newAnswers.length === 0) {
     return dbRound.id;
   }
+
   await db('answers').insert(newAnswers, 'id');
 
   return dbRound.id;
@@ -208,7 +200,7 @@ async function nestedInsert({ questions: newQuestions, ...newRound }) {
   const createdQuestions = await Promise.all(
     newQuestions.map(({ answers: omit, ...r }) =>
       db('questions')
-        .insert({ round_id: createdRound.id, ...r }, 'id')
+        .insert({ ...r, round_id: createdRound.id }, 'id')
         .then(ids =>
           db('questions')
             .where({ id: ids[0] })
@@ -224,7 +216,7 @@ async function nestedInsert({ questions: newQuestions, ...newRound }) {
       if (q.answers) {
         return [
           ...accu,
-          q.answers.map(a => ({ question_id: createdQuestions[idx].id, ...a }))
+          q.answers.map(a => ({ ...a, question_id: createdQuestions[idx].id }))
         ];
       }
       return accu;
