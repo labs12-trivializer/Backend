@@ -116,6 +116,7 @@ exports.up = function(knex) {
       })
       //Answers table
       .createTable("answers", tbl => {
+        tbl.integer("position").defaultTo(0);
         tbl.increments();
         tbl
           .integer("question_id")
