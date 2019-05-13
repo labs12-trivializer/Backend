@@ -32,7 +32,8 @@ module.exports = {
         .positive()
         .required(),
       text: Joi.string().max(128),
-      is_correct: Joi.boolean()
+      is_correct: Joi.boolean(),
+      position: Joi.number().integer().positive()
     };
 
     if (post) {
