@@ -12,6 +12,7 @@ module.exports = {
   withUserId,
   nestedInsert,
   nestedUpdate,
+  validateTier,
   findWithCounts,
   findByIdNormalized
 };
@@ -70,9 +71,7 @@ async function findByIdNormalized(id, user_id) {
   const result = round.id;
 
   const questions = await db('questions')
-    .select(
-      'questions.*'
-    )
+    .select('questions.*')
     .where({ round_id: round.id });
 
   round.questions = questions.map(r => r.id);
@@ -230,4 +229,26 @@ async function nestedInsert({ questions: newQuestions, ...newRound }) {
 
   // return the id of the createdGame
   return createdRound.id;
+}
+
+async function validateTier(game_id, user_id) {
+  //get game limit based on current tier
+  const { round_limit } = await db('users')
+    .join('tiers', 'users.tier_id', 'tiers.id')
+    .select('users.tier_id', 'users.id', 'tiers.round_limit')
+    .where({ 'users.id': user_id })
+    .first();
+
+  //get count of number of rounds associated with game_id
+  const { 'count(*)': roundCount } = await db('rounds')
+    .where({ game_id })
+    .count()
+    .first();
+
+  //compare roundCount vs round_limit and if it is the same or greater, stop from creating new game
+  if (roundCount >= round_limit) {
+    return { status: 406 };
+  } else {
+    return { status: 200 };
+  }
 }
