@@ -78,16 +78,16 @@
 [
   {
     id: 1,
-    name: 'true/false',
+    name: "true/false"
   },
   {
     id: 2,
-    name: 'multiple choice',
+    name: "multiple choice"
   },
   {
     id: 3,
-    name: 'fill-in the blank',
-  },
+    name: "fill-in the blank"
+  }
 ];
 ```
 
@@ -107,22 +107,24 @@ Example:
 [
   {
     id: 1,
-    name: 'Handcrafted Concrete Table',
-    created_at: '2019-04-30 02:54:13',
-    updated_at: '2019-04-30 02:54:13',
+    name: "Handcrafted Concrete Table",
+    created_at: "2019-04-30 02:54:13",
+    updated_at: "2019-04-30 02:54:13",
     last_played: 1556518098409,
     user_id: 506,
-    logo_url: 'http://lorempixel.com/640/480/business',
+    logo_url: "http://lorempixel.com/640/480/business",
+    date_to_be_played: "2019-05-31"
   },
   {
     id: 5,
-    name: 'Handcrafted Frozen Shoes',
-    created_at: '2019-04-30 02:54:13',
-    updated_at: '2019-04-30 02:54:13',
+    name: "Handcrafted Frozen Shoes",
+    created_at: "2019-04-30 02:54:13",
+    updated_at: "2019-04-30 02:54:13",
     last_played: 1556531295844,
     user_id: 506,
-    logo_url: 'http://lorempixel.com/640/480/business',
-  },
+    logo_url: "http://lorempixel.com/640/480/business",
+    date_to_be_played: "2019-05-31"
+  }
 ];
 ```
 
@@ -144,7 +146,9 @@ Example:
   "updated_at": "2019-04-30 16:16:20",
   "last_played": 1556583501055,
   "user_id": 506,
-  "logo_url": "http://lorempixel.com/640/480/business"
+  "logo_url": "http://lorempixel.com/640/480/business",
+  "date_to_be_played": "2019-05-31"
+
 }
 ```
 
@@ -161,6 +165,7 @@ Example:
   "name": "test game name", // string, limit 128 chars, required
   "last_played": "1556443408624", // timestamp, optional
   "logo_url": "http://lorempixel.com/640/480/business" // string, valid uri format, optional
+  "date_to_be_played": "2019-05-31" //string, optional
 }
 ```
 
@@ -193,6 +198,7 @@ Example:
   "name": "test game name", // string, limit 128 chars, required
   "last_played": "1556443408624", // timestamp, optional
   "logo_url": "http://lorempixel.com/640/480/business" // string, valid uri format, optional
+  "date_to_be_played": "2019-05-31" //string, optional
 }
 ```
 
@@ -222,21 +228,21 @@ Example:
   {
     id: 1,
     game_id: 1,
-    timestamps: '2019-04-29 15:41:47',
-    number: 5,
+    timestamps: "2019-04-29 15:41:47",
+    number: 5
   },
   {
     id: 2,
     game_id: 1,
-    timestamps: '2019-04-29 22:14:00',
-    number: 4,
+    timestamps: "2019-04-29 22:14:00",
+    number: 4
   },
   {
     id: 3,
     game_id: 1,
-    timestamps: '2019-04-29 22:14:29',
-    number: 4,
-  },
+    timestamps: "2019-04-29 22:14:29",
+    number: 4
+  }
 ];
 ```
 
@@ -319,9 +325,9 @@ Example:
     user_id: 1,
     question_type_id: 1,
     category_id: 1,
-    text: 'A walrus makes what sound?',
-    difficulty: 'Easy',
-    timestamps: '2019-04-30 19:47:24',
+    text: "A walrus makes what sound?",
+    difficulty: "Easy",
+    timestamps: "2019-04-30 19:47:24",
     round_id: 1,
     user_id: 502
   },
@@ -330,12 +336,12 @@ Example:
     user_id: 1,
     question_type_id: 1,
     category_id: 1,
-    text: 'What Philly celebrity would you want to have a drink with?',
-    difficulty: 'Easy',
-    timestamps: '2019-04-30 19:47:24',
+    text: "What Philly celebrity would you want to have a drink with?",
+    difficulty: "Easy",
+    timestamps: "2019-04-30 19:47:24",
     round_id: 1,
     user_id: 502
-  },
+  }
 ];
 ```
 
@@ -356,12 +362,12 @@ Example:
     user_id: 1,
     question_type_id: 1,
     category_id: 1,
-    text: 'What Philly celebrity would you want to have a drink with?',
-    difficulty: 'Easy',
-    timestamps: '2019-04-30 19:47:24',
+    text: "What Philly celebrity would you want to have a drink with?",
+    difficulty: "Easy",
+    timestamps: "2019-04-30 19:47:24",
     round_id: 1,
     user_id: 502
-  },
+  }
 ];
 ```
 
@@ -468,13 +474,13 @@ Example:
 ```js
 [
   {
-    name: 'General Knowledge',
-    category_id: 9,
+    name: "General Knowledge",
+    category_id: 9
   },
   {
-    name: 'Celebrities',
-    category_id: 26,
-  },
+    name: "Celebrities",
+    category_id: 26
+  }
 ];
 ```
 
@@ -495,15 +501,15 @@ Example:
   {
     id: 1,
     question_id: 3,
-    text: 'true',
-    is_correct: true,
+    text: "true",
+    is_correct: true
   },
   {
     id: 2,
     question_id: 3,
-    text: 'false',
-    is_correct: false,
-  },
+    text: "false",
+    is_correct: false
+  }
 ];
 ```
 

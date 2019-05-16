@@ -9,7 +9,9 @@ module.exports = {
   deleteQuestion,
   findByUserId,
   findByIdNormalized,
-  withUserId
+  withUserId,
+  nestedUpdate,
+  nestedInsert
 };
 
 function find() {
@@ -18,14 +20,24 @@ function find() {
 
 function withUserId(queryBuilder, user_id) {
   return queryBuilder
-    .select('questions.*')
+    .select(
+      'questions.*',
+      'question_types.name as question_type',
+      'categories.name as category'
+    )
+    .leftJoin(
+      'question_types',
+      'questions.question_type_id',
+      '=',
+      'question_types.id'
+    )
+    .leftJoin('categories', 'categories.id', '=', 'questions.category_id')
     .leftJoin('rounds', 'rounds.id', '=', 'questions.round_id')
     .leftJoin('games', 'games.id', '=', 'rounds.game_id')
     .where('games.user_id', user_id);
 }
 
 async function findByIdNormalized(id, user_id) {
-
   const question = await db('questions')
     .modify(withUserId, user_id)
     .where('questions.id', id)
@@ -56,8 +68,7 @@ async function findByIdNormalized(id, user_id) {
 }
 
 async function findByUserId(user_id) {
-  const questions = await db('questions')
-    .where({ user_id });
+  const questions = await db('questions').where({ user_id });
 
   if (!questions) {
     return null;
@@ -82,6 +93,7 @@ async function get() {
 async function getById(id) {
   const question = await find()
     .where({ id })
+    .first();
   return question;
 }
 
@@ -102,4 +114,59 @@ async function deleteQuestion(id) {
   return await db('questions')
     .where({ id })
     .del();
+}
+
+async function nestedUpdate(id, nestedQuestion) {
+  const { answers: newAnswers, ...questionDetails } = nestedQuestion;
+  const dbQuestion = await db('questions')
+    .where({ id })
+    .update(questionDetails)
+    .then(() => getById(id));
+
+  if (!newAnswers) {
+    return dbQuestion.id;
+  }
+
+  // delete all of this questions answers
+  await db('answers')
+    .where('answers.question_id', dbQuestion.id)
+    .del();
+
+  await Promise.all(
+    newAnswers.map(({ id: omitId, ...a }) =>
+      db('answers')
+        .insert({ ...a, question_id: dbQuestion.id }, 'id')
+        .then(ids =>
+          db('answers')
+            .where({ id: ids[0] })
+            .first()
+        )
+    )
+  );
+
+  return dbQuestion.id;
+}
+
+// insert a new question with optional nested answers, return the id of the
+// new question
+async function nestedInsert({ answers: newAnswers, ...newQuestion }) {
+  const createdQuestion = await insert(newQuestion);
+
+  if (!newAnswers || newAnswers.length === 0) {
+    return createdQuestion.id;
+  }
+
+  await Promise.all(
+    newAnswers.map(a =>
+      db('answers')
+        .insert({ question_id: createdQuestion.id, ...a }, 'id')
+        .then(ids =>
+          db('answers')
+            .where({ id: ids[0] })
+            .first()
+        )
+    )
+  );
+
+  return createdQuestion.id;
 }

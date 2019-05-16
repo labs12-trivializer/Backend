@@ -25,14 +25,15 @@ module.exports = {
       .where({ id })
       .del(),
 
-  schema: async (answer, post) => {
+  schema: (answer, post) => {
     let schema = {
       question_id: Joi.number()
         .integer()
         .positive()
         .required(),
       text: Joi.string().max(128),
-      is_correct: Joi.boolean()
+      is_correct: Joi.boolean(),
+      position: Joi.number().integer().positive()
     };
 
     if (post) {

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const Questions = require('../models/questions');
+const Rounds = require('../models/rounds');
 
 // GET --> /api/questions
 // router.get('/', async (req, res) => {
@@ -71,6 +72,31 @@ router.get('/:id', async (req, res) => {
     : res.status(400).json({ message: 'Error: Question not found.' });
 });
 
+// PUT --> /api/questions/normalized/:id
+// expects nested data, responds with normalized response
+router.put('/nested/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.dbInfo.id;
+  const question = await Questions.find()
+    .modify(Questions.withUserId, userId)
+    .where('questions.id', id)
+    .first();
+
+  if (!question) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No question with that id found for this user' }]
+      }
+    });
+  }
+  const changes = req.body;
+  const dbQuestion = await Questions.nestedUpdate(id, changes).then(id =>
+    Questions.findByIdNormalized(id, userId)
+  );
+  res.status(200).json(dbQuestion);
+});
+
 // PUT --> /api/questions/:id
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
@@ -90,6 +116,32 @@ router.post('/', async (req, res) => {
     : res.status(500).json({ message: 'Error: Could not add question' });
 });
 
+// POST --> /api/questions/nested
+router.post('/nested', async (req, res) => {
+  const newQuestion = req.body;
+  const userId = req.user.dbInfo.id;
+  const dbRound = await Rounds.find()
+    .where({ 'rounds.id': newQuestion.round_id })
+    .modify(Rounds.withUserId, userId)
+    .first();
+
+  if (!dbRound) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [
+          { message: 'No round found for this user with that round_id' }
+        ]
+      }
+    });
+  }
+
+  const createdQuestion = await Questions.nestedInsert(newQuestion).then(id =>
+    Questions.findByIdNormalized(id, userId)
+  );
+  res.status(200).json(createdQuestion);
+});
+
 // DELETE --> /api/questions/:id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
@@ -106,4 +158,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-

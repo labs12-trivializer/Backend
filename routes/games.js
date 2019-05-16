@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 // get all user games
 router.get('/normalized', async (req, res) => {
   const user_id = req.user.dbInfo.id;
-  const games = await Games.find().where({ user_id });
+  const games = await Games.findWithCounts().where('games.user_id', user_id);
 
   const normalized = {
     result: games.map(g => g.id),
@@ -64,6 +64,29 @@ router.get('/:id', async (req, res) => {
   return res.status(200).json(game);
 });
 
+router.put('/nested/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.dbInfo.id;
+  const game = await Games.find()
+    .where({ id, user_id: userId})
+    .first();
+
+  if (!game) {
+    return res.status(404).json({
+      error: {
+        name: 'ValidationError',
+        details: [{ message: 'No game with that id found for this user' }]
+      }
+    });
+  }
+
+  const nestedGame = req.body;
+  const dbGame = await Games.nestedUpdate(id, nestedGame).then(id =>
+    Games.findByIdAndUserIdNormalized(id, userId)
+  );
+  res.status(200).json(dbGame);
+});
+
 // update game
 router.put('/:id', async (req, res) => {
   const currentUserId = req.user.sub;
@@ -108,6 +131,16 @@ router.post('/', async (req, res) => {
   newGame.user_id = req.user.dbInfo.id;
 
   const createdGame = await Games.insert(newGame);
+  return res.status(200).json(createdGame);
+});
+
+// create game, handle nested input
+router.post('/nested', async (req, res) => {
+  const { body: newGame } = req;
+  newGame.user_id = req.user.dbInfo.id;
+  const newGameId = await Games.nestedInsert(newGame);
+  const createdGame = await Games.findByIdAndUserIdNormalized(newGameId, newGame.user_id);
+
   return res.status(200).json(createdGame);
 });
 
