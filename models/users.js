@@ -8,7 +8,7 @@ module.exports = {
   schema,
   find,
   getByAuth0Id,
-  update,
+  update
 };
 
 function find() {
@@ -35,7 +35,7 @@ async function get() {
 
 async function getById(id) {
   const user = await find()
-    .where({ id })
+    .where({ 'users.id': id })
     .first();
   return user;
 }
@@ -48,6 +48,12 @@ async function getByAuth0Id(auth0_id) {
 }
 
 async function insert(user) {
+  // default new users to bronze tier
+  if (!user.tier_id) {
+    user.tier_id = await db('tiers')
+      .where({ name: 'bronze' })
+      .first().id;
+  }
   return await db('users')
     .insert(user, 'id')
     .then(ids => getById(ids[0]));
@@ -68,15 +74,16 @@ function schema(user, post) {
     tier_id: Joi.number().integer(),
     logo_id: Joi.string(),
     avatar_id: Joi.string()
-  }
+  };
 
   // joi schema
-  if (post) schema = Object.assign(schema, {
-    email: Joi.string()
-      .email()
-      .max(255)
-      .required()
-  })
+  if (post)
+    schema = Object.assign(schema, {
+      email: Joi.string()
+        .email()
+        .max(255)
+        .required()
+    });
 
   return Joi.validate(user, schema);
 }
