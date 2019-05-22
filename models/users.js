@@ -49,11 +49,11 @@ async function getByAuth0Id(auth0_id) {
 
 async function insert(user) {
   // default new users to bronze tier
-  if (!user.tier_id) {
-    user.tier_id = await db('tiers')
-      .where({ name: 'bronze' })
-      .first().id;
-  }
+  // if (!user.tier_id) {
+  //   user.tier_id = await db('tiers')
+  //     .where({ name: 'bronze' })
+  //     .first().id;
+  // }
   return await db('users')
     .insert(user, 'id')
     .then(ids => getById(ids[0]));
