@@ -19,6 +19,9 @@ function find() {
       'tiers.game_limit',
       'tiers.round_limit',
       'tiers.question_limit',
+      'users.first_name',
+      'users.last_name',
+      'users.nickname',
       'users.email',
       'users.logo_id',
       'users.avatar_id',
@@ -67,7 +70,11 @@ function schema(user, post) {
       .max(255),
     tier_id: Joi.number().integer(),
     logo_id: Joi.string(),
-    avatar_id: Joi.string()
+    avatar_id: Joi.string(),
+    first_name: Joi.string(),
+    last_name: Joi.string(),
+    nickname: Joi.string()
+
   }
 
   // joi schema

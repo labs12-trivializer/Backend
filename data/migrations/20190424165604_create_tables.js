@@ -30,7 +30,7 @@ exports.up = function(knex) {
           .notNullable()
           .unique();
         tbl
-          .string("display_name", 128)
+          .string("nickname", 128)
           .unique();
         tbl.string("first_name", 128);
         tbl.string("last_name", 128);
