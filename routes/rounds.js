@@ -88,6 +88,12 @@ router.post('/nested', validate(Rounds.schema, true), async (req, res) => {
   const { body: newRound } = req;
   const userId = req.user.dbInfo.id;
 
+  //check if user met round alottment for game based on tier
+  const roundNumber = await Rounds.validateTier(newRound.game_id, userId);
+  if (roundNumber.status === 406) {
+    return res.status(406).json({ error: 'round limit met for game' });
+  }
+
   const dbGame = await Games.find()
     .where({
       user_id: userId,

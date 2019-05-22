@@ -68,7 +68,7 @@ router.put('/nested/:id', async (req, res) => {
   const { id } = req.params;
   const userId = req.user.dbInfo.id;
   const game = await Games.find()
-    .where({ id, user_id: userId})
+    .where({ id, user_id: userId })
     .first();
 
   if (!game) {
@@ -137,9 +137,21 @@ router.post('/', async (req, res) => {
 // create game, handle nested input
 router.post('/nested', async (req, res) => {
   const { body: newGame } = req;
+  const userId = req.user.dbInfo.id;
+  const tierCheck = await Games.validateTier(userId);
+  //if game limit has been met, return without creating new game in db
+  if (tierCheck.status === 406) {
+    return res
+      .status(406)
+      .json({ error: 'game limit met' })
+      .end();
+  }
   newGame.user_id = req.user.dbInfo.id;
   const newGameId = await Games.nestedInsert(newGame);
-  const createdGame = await Games.findByIdAndUserIdNormalized(newGameId, newGame.user_id);
+  const createdGame = await Games.findByIdAndUserIdNormalized(
+    newGameId,
+    newGame.user_id
+  );
 
   return res.status(200).json(createdGame);
 });

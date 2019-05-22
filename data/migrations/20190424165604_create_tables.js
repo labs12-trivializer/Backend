@@ -24,7 +24,8 @@ exports.up = function(knex) {
           .references("id")
           .inTable("tiers")
           .onDelete("CASCADE")
-          .onUpdate("CASCADE");
+          .onUpdate("CASCADE")
+          .defaultTo(1);
         tbl
           .string("email", 128)
           .notNullable()
