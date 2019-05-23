@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const validate = require('../middleware/validate');
 const Users = require('../models/users');
+const auth0 = require('../api/auth0');
 
 // user profile route
 router.get('/my_profile', async (req, res) => {
@@ -22,6 +23,13 @@ router.put('/my_profile', validate(Users.schema), async(req, res) => {
   const { body: user } = req;
 
   user.auth0_id = currentUserId;
+
+  if (user.email || user.nickname) {
+    await auth0.patchUser(currentUserId, {
+      email: user.email,
+      nickname: user.nickname
+    });
+  }
 
   const updatedUser = await Users.update(currentUserId, user);
   return res.status(200).json(updatedUser);
