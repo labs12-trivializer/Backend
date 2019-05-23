@@ -46,6 +46,7 @@
     "jwks-rsa": "^1.4.0",
     "knex": "^0.16.5",
     "knex-cleaner": "^1.1.4",
+    "nodemailer": "^6.1.1",
     "pg": "^7.10.0",
     "sqlite3": "^4.0.6",
     "stripe": "^6.31.1",
