@@ -56,7 +56,7 @@ async function findByIdAndUserIdNormalized(id, user_id) {
     .select('rounds.id', 'categories.name', 'categories.id as category_id')
     .leftJoin('questions', 'questions.round_id', '=', 'rounds.id')
     .leftJoin('categories', 'questions.category_id', '=', 'categories.id')
-    .groupBy('categories.id', 'rounds.game_id')
+    .groupBy('categories.id', 'rounds.id')
     .whereIn('rounds.id', dbRounds.map(r => r.id));
 
   const rounds = dbRounds.map(r => ({
