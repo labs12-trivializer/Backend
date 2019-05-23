@@ -14,6 +14,7 @@ module.exports = {
   validateTier,
   findWithCounts,
   findByIdAndUserId,
+  findWithCategoryCounts,
   findByIdAndUserIdNormalized
 };
 
@@ -48,7 +49,22 @@ async function findByIdAndUserIdNormalized(id, user_id) {
 
   const result = game.id;
 
-  const rounds = await db('rounds').where({ game_id: game.id });
+  const dbRounds = await db('rounds').where({ game_id: game.id });
+
+  const category_counts = await db('rounds')
+    .count('categories.id as count')
+    .select('rounds.id', 'categories.name', 'categories.id as category_id')
+    .leftJoin('questions', 'questions.round_id', '=', 'rounds.id')
+    .leftJoin('categories', 'questions.category_id', '=', 'categories.id')
+    .groupBy('categories.id', 'rounds.id')
+    .whereIn('rounds.id', dbRounds.map(r => r.id));
+
+  const rounds = dbRounds.map(r => ({
+    ...r,
+    category_counts: category_counts
+      .filter(cc => cc.id === r.id)
+      .map(({ id: omit, ...cc }) => cc)
+  }));
 
   game.rounds = rounds.map(r => r.id);
 
@@ -353,4 +369,33 @@ async function validateTier(user_id) {
   } else {
     return { status: 200 };
   }
+}
+
+// find games, include their category counts
+async function findWithCategoryCounts(user_id) {
+  // get games with question and round counts
+  const games = await findWithCounts().where('games.user_id', user_id);
+
+  // get category_counts associated with these games
+  // grouping by multiple values in this way will
+  // return counts for all rows where game_id and categories.id
+  // are the same
+  const category_counts = await db('rounds')
+    .count('categories.id as count')
+    .select('rounds.game_id', 'categories.name', 'categories.id as category_id')
+    .leftJoin('questions', 'questions.round_id', '=', 'rounds.id')
+    .leftJoin('categories', 'questions.category_id', '=', 'categories.id')
+    .groupBy('categories.id', 'rounds.game_id')
+    .whereIn('rounds.game_id', games.map(g => g.id));
+
+  // add a category_counts array to the game object,
+  // omit the game_id on each category_count
+  const gamesWithCategoryCounts = games.map(g => ({
+    ...g,
+    category_counts: category_counts
+      .filter(cc => cc.game_id === g.id)
+      .map(({ game_id: omit, ...cc }) => cc)
+  }));
+
+  return gamesWithCategoryCounts;
 }
