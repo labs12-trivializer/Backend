@@ -74,12 +74,12 @@ function schema(user, post) {
     first_name: Joi.string(),
     last_name: Joi.string(),
     nickname: Joi.string()
-
   }
 
   // joi schema
   if (post)
     schema = Object.assign(schema, {
+      auth0_id: Joi.string().required(),
       email: Joi.string()
         .email()
         .max(255)
