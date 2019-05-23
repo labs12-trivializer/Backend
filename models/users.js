@@ -8,7 +8,7 @@ module.exports = {
   schema,
   find,
   getByAuth0Id,
-  update,
+  update
 };
 
 function find() {
@@ -19,6 +19,9 @@ function find() {
       'tiers.game_limit',
       'tiers.round_limit',
       'tiers.question_limit',
+      'users.first_name',
+      'users.last_name',
+      'users.nickname',
       'users.email',
       'users.logo_id',
       'users.avatar_id',
@@ -35,7 +38,7 @@ async function get() {
 
 async function getById(id) {
   const user = await find()
-    .where({ id })
+    .where({ 'users.id': id })
     .first();
   return user;
 }
@@ -67,16 +70,21 @@ function schema(user, post) {
       .max(255),
     tier_id: Joi.number().integer(),
     logo_id: Joi.string(),
-    avatar_id: Joi.string()
+    avatar_id: Joi.string(),
+    first_name: Joi.string(),
+    last_name: Joi.string(),
+    nickname: Joi.string()
+
   }
 
   // joi schema
-  if (post) schema = Object.assign(schema, {
-    email: Joi.string()
-      .email()
-      .max(255)
-      .required()
-  })
+  if (post)
+    schema = Object.assign(schema, {
+      email: Joi.string()
+        .email()
+        .max(255)
+        .required()
+    });
 
   return Joi.validate(user, schema);
 }

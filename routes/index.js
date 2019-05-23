@@ -11,6 +11,7 @@ const games = require('./games');
 const rounds = require('./rounds');
 const billing = require('./billing');
 const answers = require('./answers');
+const contact = require('./contact');
 const lookupUser = require('../middleware/lookupUser');
 
 module.exports = server => {
@@ -31,6 +32,7 @@ module.exports = server => {
   server.use('/api/question_types', restricted, questionTypes);
   server.use('/api/categories', restricted, categories);
   server.use('/api/tiers', restricted, tiers);
+  server.use('/api/contact', contact);
   server.get(/\/(?:api)?/, (req, res) => {
     res.status(200).json({ message: 'Server up & running!' });
   });
