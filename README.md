@@ -1,6 +1,74 @@
-# API documentation
+# :beers: Labs12-Triviabase Backend :beers:
+### Live Website :computer: - https://lambda-trivializer.netlify.com/
+##### Backend URL : https://lambda-trivializer.herokuapp.com
+#### An app for Bar Trivia hosts that streamlines and simplifies the formerly tedious process of creating fun and challenging trivia games for your audiences.
 
-# Resource: Authentication
+### Project Management
+- [Trello](https://trello.com/b/9CKwetbt/labs12-trivia-lizer) 🌍
+
+
+## Table of Contents
+ - [Summary Table of API Endpoints](#summary-table-of-api-endpoints)
+   - [Users](#resource-users)
+   - [Games](#resource-games)
+   - [Rounds](#resource-rounds)
+   - [Questions](#resource-questions)
+   - [QuestionTypes](#resource-questiontypes)
+   - [Categories](#resource-categories)
+   - [Answers](#resource-answers)
+   - [Billing](#resource-billing)
+   - [Profile](#profile)
+
+
+
+### Summary Table of API Endpoints
+| Type   | Endpoints                      | Description                                                       |
+| ------ | ------------------------------ | ------------------------------------------------------------------|
+| GET    | /api/users/my_profile          | get current user's profile                                        |
+| PUT    | /api/users/my_profile          | update current user's profile                                     |
+| POST   | /api/users                     | add or update current user's profile                              |
+| GET    | /api/tiers                     | get list of available payment tiers                               |
+| GET    | /api/tiers/:id                 | get tier by id                                                    |
+| GET    | /api/rounds                    | get list of all user's rounds                                     |
+| GET    | /api/rounds/normalized         | get all user rounds with normalized response                      |
+| GET    | /api/rounds/normalized/:id     | get round by id, normalized                                     |
+| POST   | /api/rounds/nested             | create round with nested questions and answers                    |
+| POST   | /api/rounds                    | create round                                                      |
+| PUT    | /api/rounds/nested/:id         | update round with possible questions and answers                  |
+| PUT    | /api/rounds/:id                | update round                                                      |
+| DELETE | /api/rounds/:id                | delete a round                                                    |
+| GET    | /api/question_types/           | get list of questionTypes                                         |
+| GET    | /api/question_types/normalized | get normalized list of questionTypes                              |
+| GET    | /api/questions/                | get list of all user's questions                                  |
+| GET    | /api/questions/normalized      | get all user questions normalized                                 |
+| GET    | /api/questions/normalized/:id  | get question by id normalized                                     |
+| PUT    | /api/questions/nested/:id      | update question with possible answers nested                      |
+| POST   | /api/questions/nested          | create question with possible answers nested                      |
+| DELETE | /api/questions/:id             | delete user question                                              |
+| GET    | /api/games/normalized          | get all user games normalized                                     |
+| GET    | /api/games/normalized/:id      | get game by id normalized                                         |
+| PUT    | /api/games/nested/:id          | update game with possible nested rounds, questions, and answers |
+| PUT    | /api/games/:id                 | update game                                                       |
+| POST   | /api/games/                    | create a game                                                     |
+| POST   | /api/games/nested              | create a game with possible nested rounds, questions, answers   |
+| DELETE | /api/games/:id                 | delete game                                                       |
+| POST   | /api/contact/                  | submit an email message to our company address                    |
+| GET    | /api/categories/               | get all categories                                                |
+| GET    | /api/categories/normalized     | get all categories normalized                                     |
+| POST   | /api/billing/customer          | create stripe customer                                            |
+| POST   | /api/billing/subscribe         | create a stripe subscription                                      |
+| POST   | /api/answers/                  | create an answer                                                  |
+| GET    | /api/answers/normalized/:id    | get a signle answer normalized                                    |
+| PUT    | /api/answers/:id               | update an answer                                                  |
+| DELETE | /api/answers/:id               | delete an answer                                                  |
+
+
+#### Register and Login Options
+- Authentication and Signup handled by Auth0
+
+
+
+### Resource: Authentication
 
 # Resource: Users
 
@@ -774,3 +842,9 @@ Example:
   "trial_start": null
 }
 ```
+
+### Authors
+- [Steve Delfaus](https://github.com/heyjuststart)
+- [Kory Newton](https://github.com/korynewton)
+- [Jonathan Picazo](https://github.com/macjabeth)
+- [Laurence Van Buren](https://github.com/IVB107)
