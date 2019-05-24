@@ -24,9 +24,17 @@ router.put('/my_profile', validate(Users.schema), async(req, res) => {
 
   user.auth0_id = currentUserId;
 
-  if (user.email || user.nickname) {
-    await auth0.patchUser(currentUserId, {
-      email: user.email,
+  let auth0Update;
+
+  // TODO: Merge some of these responses into our backend
+  if (user.email) {
+    auth0Update = await auth0.patchUser(currentUserId, {
+      email: user.email
+    });
+  }
+
+  if (user.nickname) {
+    auth0Update = await auth0.patchUser(currentUserId, {
       nickname: user.nickname
     });
   }
@@ -68,7 +76,7 @@ router.post('/', validate(Users.schema, true), async (req, res) => {
 
   // if the user existed, return that
   const foundUser = await Users.find()
-    .where({ email: user.email })
+    .where({ auth0_id: currentUserId })
     .first();
 
   if (foundUser) {
