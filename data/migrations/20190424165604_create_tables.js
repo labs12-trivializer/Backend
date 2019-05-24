@@ -30,9 +30,7 @@ exports.up = function(knex) {
           .string("email", 128)
           .notNullable()
           .unique();
-        tbl
-          .string("nickname", 128)
-          .unique();
+        tbl.string("nickname", 128)
         tbl.string("first_name", 128);
         tbl.string("last_name", 128);
         tbl.string("logo_id", 400);
