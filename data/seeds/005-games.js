@@ -15,7 +15,7 @@ exports.seed = async function(knex) {
       name: faker.commerce.productName(),
       user_id: randomItem(dbUsers).id,
       logo_url: faker.image.business(),
-      last_played: faker.date.recent()
+      last_played: faker.date.recent(),
     });
   }
 
