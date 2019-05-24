@@ -13,11 +13,11 @@ exports.seed = async function(knex) {
 
   for(let i = 0; i < 300; i++) {
     questions.push({
-      question_type_id: randomItem(dbQuestionTypes).id,
+      question_type_id: dbQuestionTypes[1].id,
       category_id: randomItem(dbCategories).id,
       round_id: randomItem(dbRounds).id,
-      difficulty: randomItem(['easy', 'medium', 'hard']),
-      text: faker.hacker.phrase()
+      difficulty: randomItem(['easy']),
+      text: faker.company.catchPhrase() + '?'
     });
   }
 
