@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
   let mailOptions = {
     from: 'lambda.trivializer@gmail.com',
     to: 'lambda.trivializer@gmail.com',
-    subject: `TRIVIALIZER MESSAGE FROM: ${name} (${email})`,
+    subject: `TRIVIABASE MESSAGE FROM: ${name} (${email})`,
     text: `${message}`
   };
 
